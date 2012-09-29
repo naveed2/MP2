@@ -1,19 +1,28 @@
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import java.util.Scanner;
 
 public class DistributedMachine {
 
     private static Scanner in = new Scanner(System.in);
     private static UDPServer server;
+    private static Logger logger = Logger.getLogger(DistributedMachine.class);
 
     public static void main(String[] args) {
+        log4jConfigure();
         work();
+    }
+
+    private static void log4jConfigure() {
+        PropertyConfigurator.configure("log4j.properties");
     }
 
     private static void work() {
         printWelcomeMessage();
 
         //TODO:
-        server = new UDPServer();
+//        server = new UDPServer();
 
         while(true) {
             String cmd = inputCommand();
