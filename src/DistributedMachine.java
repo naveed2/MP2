@@ -46,7 +46,7 @@ public class DistributedMachine {
             } else {
                 Method method = DistributedMachine.class.getDeclaredMethod(funcName);
                 method.setAccessible(true);
-                method.invoke(null);    //static
+                method.invoke(null);    //static method
                 method.setAccessible(false);
             }
         }
@@ -107,7 +107,9 @@ public class DistributedMachine {
             return;
         }
 
-        byte[] sendData = new byte[1024];
+
+        //TODO: should send join message
+        byte[] sendData;
         sendData = "24242a".getBytes();
         String[] add = str.split(":");
         try {
