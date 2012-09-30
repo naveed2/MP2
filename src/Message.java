@@ -25,13 +25,13 @@ public class Message {
 	int _messageType;
 	public InetAddress _IP = null;
 	public int _id;
-	public Timestamp _time_stamp = null;
+	public int _time_stamp;
 	
 	public Message(){
 		
 	}
 	
-	public static Message generateJoinMessage(InetAddress IP_join, int id_join, Timestamp time_stamp_join){
+	public static Message generateJoinMessage(InetAddress IP_join, int id_join, int time_stamp_join){
 		Message msg = new Message();
 		msg._messageType = 0;
 		msg._IP = IP_join;
@@ -40,7 +40,7 @@ public class Message {
 		return msg;
 	}
 	
-	public Message generateLeaveMessage(InetAddress IP_leave, int id_join, Timestamp time_stamp_join){
+	public Message generateLeaveMessage(InetAddress IP_leave, int id_join, int time_stamp_join){
 		Message msg = new Message();
 		msg._messageType = 1;
 		msg._IP = IP_leave;
@@ -80,7 +80,7 @@ public class Message {
 		root.appendChild(id);
 		
 		Element time_stamp = doc.createElement("timestamp");
-		time_stamp.appendChild(doc.createTextNode(_time_stamp.toString()));
+		time_stamp.appendChild(doc.createTextNode(Integer.toString(_time_stamp)));
 		root.appendChild(time_stamp);
 		
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
