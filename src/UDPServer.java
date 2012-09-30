@@ -4,6 +4,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Used by contact machine. This is UDP server.
@@ -12,12 +14,14 @@ public class UDPServer {
 
     private DatagramSocket serverSocket;
     private int port;
-    private static final Integer BUFFER_SIZE = 512;
+    private static final Integer BUFFER_SIZE = 1024;
+    private MessageQueue msgQueue;
 
     private Logger logger = Logger.getLogger(UDPServer.class);
 
     public UDPServer(int port) {
         this.port = port;
+        this.msgQueue = new MessageQueue();
     }
 
     public void start() throws SocketException {
@@ -26,14 +30,16 @@ public class UDPServer {
             public void run() {
 
                 byte[] receiveBuffer = new byte[BUFFER_SIZE];
-                byte[] sendBuffer = new byte[BUFFER_SIZE];
 
                 try{
                     while(true) {
                         DatagramPacket receivePacket = new DatagramPacket(receiveBuffer,BUFFER_SIZE);
                         serverSocket.receive(receivePacket);
-                        String test = new String(receivePacket.getData());
-                        System.out.println(test);
+                        String receiveString = new String(receivePacket.getData());
+                        msgQueue.add(receiveString);
+
+                        //TODO:for test
+                        System.out.println(receiveString);
                     }
                 } catch(Exception ex) {
                     ex.printStackTrace();
