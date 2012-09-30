@@ -3,6 +3,10 @@ import org.apache.log4j.PropertyConfigurator;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.Scanner;
 
 public class DistributedMachine {
@@ -18,7 +22,7 @@ public class DistributedMachine {
         try{
             work();
         } catch (Exception ex) {
-            logger.error(ex.getMessage());
+            logger.fatal(ex.getLocalizedMessage());
             ex.printStackTrace();
         }
     }
@@ -26,8 +30,6 @@ public class DistributedMachine {
     private static void log4jConfigure() {
         PropertyConfigurator.configure("log4j.properties");
     }
-
-    private static final String CMD_START_AS_CONTACT = "start contact server";
 
     private static void work() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         printWelcomeMessage();
@@ -59,10 +61,27 @@ public class DistributedMachine {
         return in.nextLine();
     }
 
+    private static String inputAddress() {
+        System.out.print("Input the address: ");
+        String str = in.nextLine();
+        if(UtilityTool.isIPAddress(str)) {
+            return str;
+        }
+        return null;
+    }
+
     private static int inputPortNumber() {
         System.out.print("Input the port: ");
-        //TODO: not finished yet
-        return 0;
+        String str = in.nextLine();
+        int ret;
+
+        try {
+            ret = Integer.parseInt(str);
+        } catch(NumberFormatException ex) {
+            logger.info("Number format error");
+            return 0;
+        }
+        return ret;
     }
 
     private static void printWelcomeMessage() {
@@ -71,7 +90,33 @@ public class DistributedMachine {
     }
 
     private static void startContactServer() {
+        int port = inputPortNumber();
+        server = new UDPServer(port);
+        try {
+            server.start();
+        } catch (SocketException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+    }
 
-//        server = new UDPServer()
+    private static void connectContactServer() {
+        String str = inputAddress();
+        if(str == null) {
+            System.out.println("Wrong ip address");
+            return;
+        }
+
+        byte[] sendData = new byte[1024];
+        sendData = "24242a".getBytes();
+        String[] add = str.split(":");
+        try {
+            DatagramSocket socket = new DatagramSocket();
+            InetAddress address = InetAddress.getByName(add[0]);
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, Integer.parseInt(add[1]));
+            socket.send(sendPacket);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

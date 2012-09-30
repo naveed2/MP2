@@ -13,6 +13,9 @@ public class CommandMap {
     private static final String CMD_START_CONTACT_SERVER = "start contact server";
     private static final String FUNC_START_CONTACT_SERVER = "startContactServer";
 
+    private static final String CMD_CONNECT_CONTACT_SERVER = "connect";
+    private static final String FUNC_CONNECT_CONTACT_SERVER = "connectContactServer";
+
     private CommandMap() {
 
     }
@@ -26,6 +29,7 @@ public class CommandMap {
         stringToFuncName = new HashMap<String, String>();
 
         stringToFuncName.put(CMD_START_CONTACT_SERVER, FUNC_START_CONTACT_SERVER);
+        stringToFuncName.put(CMD_CONNECT_CONTACT_SERVER, FUNC_CONNECT_CONTACT_SERVER);
 
         return this;
     }
