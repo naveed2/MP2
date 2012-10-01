@@ -5,14 +5,14 @@ import java.util.Set;
 
 public class MemberList {
 	
-	Map<String, MachineInfo2> list = null;
+	private Map<String, MachineInfo> list = null;
 	
 	public MemberList(){
-		list = new HashMap<String, MachineInfo2>();
+		list = new HashMap<String, MachineInfo>();
 		
 	}
 	
-	public void add(String IP, MachineInfo2 ID){
+	public void add(String IP, MachineInfo ID){
 		list.put(IP, ID);
 	}
 	
