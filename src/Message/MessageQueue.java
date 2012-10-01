@@ -7,9 +7,13 @@ public class MessageQueue {
 
     private List<String> msgQueue;
 
+    private final List<MessageReceivedListener> messageReceivedListeners;
+
     public MessageQueue() {
         msgQueue = new LinkedList<String>();
+        messageReceivedListeners = new LinkedList<MessageReceivedListener>();
     }
+
 
     public void add(String msg) {
         synchronized (this) {
@@ -28,6 +32,24 @@ public class MessageQueue {
             String ret = msgQueue.get(0);
             msgQueue.remove(0);
             return ret;
+        }
+    }
+
+    public MessageQueue addMessageReceivedListener(MessageReceivedListener mrl) {
+        synchronized (messageReceivedListeners) {
+            messageReceivedListeners.add(mrl);
+        }
+        return this;
+    }
+
+    public void fireMessageReceiving() {
+        String stringMsg = top();
+        Message msg = Message.generateMessageFromString(stringMsg);
+
+        synchronized (messageReceivedListeners) {
+            for(MessageReceivedListener mrl : messageReceivedListeners) {
+                mrl.onReceivingMessage(msg);
+            }
         }
     }
 }

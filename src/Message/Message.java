@@ -51,6 +51,10 @@ public class Message {
 		return msg;
 	}
 
+    public static Message generateMessageFromString(String xmlStr) {
+        return null;
+    }
+
 	public void toxmlString(OutputStream os) throws ParserConfigurationException, TransformerException{
 		//return Integer.toString(messageType) + IP.toString() + Integer.toString()
 
