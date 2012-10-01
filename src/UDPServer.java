@@ -43,7 +43,7 @@ public class UDPServer {
                         //TODO:for test
                         System.out.println();
                         System.out.println(receiveString);
-                        System.out.println(">");
+                        System.out.print(">");
                     }
                 } catch(Exception ex) {
                     ex.printStackTrace();
