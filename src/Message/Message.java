@@ -1,14 +1,14 @@
+package Message;
+
 import java.io.File;
 import java.io.OutputStream;
 import java.net.InetAddress;
-import java.sql.Timestamp;
 import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -50,11 +50,7 @@ public class Message {
 		msg._time_stamp = time_stamp_join;
 		return msg;
 	}
-	
-	public Message generateSyncMessage(MemberList list){
-		return null;
-	}
-	
+
 	public void toxmlString(OutputStream os) throws ParserConfigurationException, TransformerException{
 		//return Integer.toString(messageType) + IP.toString() + Integer.toString()
 

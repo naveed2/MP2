@@ -1,6 +1,7 @@
+import Message.Message;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.sql.Timestamp;
 import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -13,7 +14,7 @@ public class msg {
 		
 		InetAddress address = InetAddress.getLocalHost();
 
-		Message msg =Message.generateJoinMessage(address, UUID.randomUUID(), 0);
+		Message msg = Message.generateJoinMessage(address, UUID.randomUUID(), 0);
 		
 		msg.toxmlString(System.out);
 	}
