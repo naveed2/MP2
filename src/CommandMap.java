@@ -16,6 +16,12 @@ public class CommandMap {
     private static final String CMD_CONNECT_CONTACT_SERVER = "connect";
     private static final String FUNC_CONNECT_CONTACT_SERVER = "connectContactServer";
 
+    private static final String CMD_SHOW_MEMBER_LIST = "show";
+    private static final String FUNC_SHOW_MEMBER_LIST = "showMemberList";
+
+    private static final String CMD_HELP = "help";
+    private static final String FUNC_HELP = "printHelp";
+
     private CommandMap() {
 
     }
@@ -30,8 +36,19 @@ public class CommandMap {
 
         stringToFuncName.put(CMD_START_CONTACT_SERVER, FUNC_START_CONTACT_SERVER);
         stringToFuncName.put(CMD_CONNECT_CONTACT_SERVER, FUNC_CONNECT_CONTACT_SERVER);
+        stringToFuncName.put(CMD_SHOW_MEMBER_LIST, FUNC_SHOW_MEMBER_LIST);
+        stringToFuncName.put(CMD_HELP, FUNC_HELP);
 
         return this;
+    }
+
+    private static final String FORMAT_STRING = "%-25s%-25s\n";
+
+    public static void printHelp() {
+        System.out.printf(FORMAT_STRING, "COMMAND", "USAGE");
+        System.out.printf(FORMAT_STRING, CMD_START_CONTACT_SERVER, "start as a contact server");
+        System.out.printf(FORMAT_STRING, CMD_CONNECT_CONTACT_SERVER + " ip:port", "connect the contact server");
+        System.out.printf(FORMAT_STRING, CMD_SHOW_MEMBER_LIST, "show the member list");
     }
 
     public synchronized String findCommand(String cmd) {

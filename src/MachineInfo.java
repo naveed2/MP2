@@ -20,4 +20,13 @@ public class MachineInfo {
         this.timestamp = timestamp;
         return this;
     }
+
+    public String getAddress() {
+        return ip + ":" + port;
+    }
+
+    public UUID getUUID() {
+        return uuid;
+    }
+
 }

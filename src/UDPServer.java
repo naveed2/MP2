@@ -38,8 +38,12 @@ public class UDPServer {
                         String receiveString = new String(receivePacket.getData());
                         msgQueue.add(receiveString);
 
+                        //TODO:dirty code nowx
+
                         //TODO:for test
+                        System.out.println();
                         System.out.println(receiveString);
+                        System.out.println(">");
                     }
                 } catch(Exception ex) {
                     ex.printStackTrace();

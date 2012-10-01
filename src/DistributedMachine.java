@@ -1,3 +1,4 @@
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -8,6 +9,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class DistributedMachine {
 
@@ -15,11 +17,13 @@ public class DistributedMachine {
     private static UDPServer server;
     private static Logger logger = Logger.getLogger(DistributedMachine.class);
 
-    private static DistributedMachine instance;
+    private static MemberList memberList;
+    private static CommandMap commandMap;
 
     public static void main(String[] args) {
         log4jConfigure();
         try{
+            init();
             work();
         } catch (Exception ex) {
             logger.fatal(ex.getLocalizedMessage());
@@ -27,13 +31,16 @@ public class DistributedMachine {
         }
     }
 
+    private static void init() {
+        printWelcomeMessage();
+        commandMap = CommandMap.getInstance().initialize();
+    }
+
     private static void log4jConfigure() {
         PropertyConfigurator.configure("log4j.properties");
     }
 
     private static void work() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        printWelcomeMessage();
-        CommandMap commandMap = CommandMap.getInstance().initialize();
 
         while(true) {
             String cmd = inputCommand();
@@ -109,16 +116,46 @@ public class DistributedMachine {
 
 
         //TODO: should send join message
-        byte[] sendData;
-        sendData = "24242a".getBytes();
+        InetAddress address;
         String[] add = str.split(":");
+        byte[] sendData;
+
+
         try {
             DatagramSocket socket = new DatagramSocket();
-            InetAddress address = InetAddress.getByName(add[0]);
+            address = InetAddress.getByName(add[0]);
+
+            Message joinMessage = Message.generateJoinMessage(address, UUID.randomUUID(), 0);
+
+            ByteOutputStream bos = new ByteOutputStream();
+            joinMessage.toxmlString(bos);
+            sendData = bos.getBytes();
+
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, Integer.parseInt(add[1]));
             socket.send(sendPacket);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void showMemberList() {
+        if(memberList.size() == 0) {
+            System.out.println("no machine in the member list");
+            return;
+        }
+
+        for(MachineInfo mi : memberList.getAll()) {
+            System.out.println(mi.getAddress());
+        }
+    }
+
+    public static void printHelp() {
+        CommandMap.printHelp();
+    }
+
+    public static void addMachine(MachineInfo mc) {
+        if(! memberList.contains(mc)) {
+            memberList.add(mc);
         }
     }
 }

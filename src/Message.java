@@ -1,6 +1,8 @@
 import java.io.File;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,14 +26,14 @@ public class Message {
 	
 	int _messageType;
 	public InetAddress _IP = null;
-	public int _id;
+	public UUID _id;
 	public int _time_stamp;
 	
 	public Message(){
 		
 	}
 	
-	public static Message generateJoinMessage(InetAddress IP_join, int id_join, int time_stamp_join){
+	public static Message generateJoinMessage(InetAddress IP_join, UUID id_join, int time_stamp_join){
 		Message msg = new Message();
 		msg._messageType = 0;
 		msg._IP = IP_join;
@@ -39,8 +41,8 @@ public class Message {
 		msg._time_stamp = time_stamp_join;
 		return msg;
 	}
-	
-	public Message generateLeaveMessage(InetAddress IP_leave, int id_join, int time_stamp_join){
+
+	public Message generateLeaveMessage(InetAddress IP_leave, UUID id_join, int time_stamp_join){
 		Message msg = new Message();
 		msg._messageType = 1;
 		msg._IP = IP_leave;
@@ -53,9 +55,9 @@ public class Message {
 		return null;
 	}
 	
-	public void toxmlString() throws ParserConfigurationException, TransformerException{
+	public void toxmlString(OutputStream os) throws ParserConfigurationException, TransformerException{
 		//return Integer.toString(messageType) + IP.toString() + Integer.toString()
-		
+
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 		
@@ -76,7 +78,7 @@ public class Message {
 		root.appendChild(IP);
 		
 		Element id = doc.createElement("id");
-		id.appendChild(doc.createTextNode(Integer.toString(_id)));
+		id.appendChild(doc.createTextNode(_id.toString()));
 		root.appendChild(id);
 		
 		Element time_stamp = doc.createElement("timestamp");
@@ -88,11 +90,12 @@ public class Message {
 		DOMSource source = new DOMSource(doc);
 		StreamResult result = new StreamResult(new File("message.xml"));
 		
-		StreamResult result1 = new StreamResult(System.out);
+		StreamResult result1 = new StreamResult(os);
 		
 		transformer.transform(source, result);
 		transformer.transform(source, result1);
-		
+
+        //TODO:what does "file saved" mean?
 		System.out.println("File saved!");
  
 		

@@ -1,27 +1,51 @@
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 public class MemberList {
 	
-	private Map<String, MachineInfo> list = null;
+
+    private List<MachineInfo> list;
 	
 	public MemberList(){
-		list = new HashMap<String, MachineInfo>();
-		
+
+		list = new LinkedList<MachineInfo>();
 	}
+
+
+    public void add(MachineInfo mc) {
+        synchronized (this) {
+            list.add(mc);
+        }
+    }
 	
-	public void add(String IP, MachineInfo ID){
-		list.put(IP, ID);
-	}
-	
-	public Set<String> keySet(){
-		return list.keySet(); 
-	}
-	
+
 	public void remove(String key){
-		list.remove(key);
+        synchronized (this) {
+		    list.remove(key);
+        }
 	}
+
+    public List<MachineInfo> getAll() {
+        synchronized (this) {
+            return new LinkedList<MachineInfo>(list);
+        }
+    }
+
+    public int size() {
+        synchronized (this) {
+            return list.size();
+        }
+    }
+
+    public boolean contains(MachineInfo mc) {
+        synchronized (this) {
+            for(MachineInfo tmp : list) {
+                if(tmp.getUUID().equals(mc.getUUID())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 
 }
