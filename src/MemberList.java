@@ -1,3 +1,5 @@
+import Server.MachineInfo;
+
 import java.util.*;
 
 

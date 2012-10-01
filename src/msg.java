@@ -1,4 +1,5 @@
-import Message.Message;
+import Transmission.Message;
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -15,8 +16,19 @@ public class msg {
 		InetAddress address = InetAddress.getLocalHost();
 
 		Message msg = Message.generateJoinMessage(address, UUID.randomUUID(), 0);
-		
-		msg.toxmlString(System.out);
+
+        ByteOutputStream bos = new ByteOutputStream();
+
+		msg.toxmlString(bos);
+        msg.toxmlString(System.out);
+
+        String str = new String(bos.getBytes());
+        System.out.println(str);
+
+        msg = Message.generateMessageFromString(str);
+        msg.toxmlString(System.out);
 	}
+
+
 
 }

@@ -1,8 +1,12 @@
-import Message.Message;
+import Transmission.Message;
+import Server.MachineInfo;
+import Server.UDPServer;
+import Util.UtilityTool;
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.DatagramPacket;
@@ -35,6 +39,7 @@ public class DistributedMachine {
     private static void init() {
         printWelcomeMessage();
         commandMap = CommandMap.getInstance().initialize();
+        startUDPServer(inputPortNumber());
     }
 
     private static void log4jConfigure() {
@@ -97,6 +102,17 @@ public class DistributedMachine {
         System.out.println("Author: Muhammad Naveed, Junjie Hu");
     }
 
+    private static void startUDPServer(int port) {
+        server = new UDPServer(port);
+        try {
+            server.start();
+        } catch (SocketException e) {
+            e.printStackTrace();
+            logger.error(e.toString());
+        }
+    }
+
+
     private static void startContactServer() {
         int port = inputPortNumber();
         server = new UDPServer(port);
@@ -115,12 +131,9 @@ public class DistributedMachine {
             return;
         }
 
-
-        //TODO: should send join message
         InetAddress address;
         String[] add = str.split(":");
         byte[] sendData;
-
 
         try {
             DatagramSocket socket = new DatagramSocket();
@@ -128,9 +141,11 @@ public class DistributedMachine {
 
             Message joinMessage = Message.generateJoinMessage(address, UUID.randomUUID(), 0);
 
-            ByteOutputStream bos = new ByteOutputStream();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
             joinMessage.toxmlString(bos);
-            sendData = bos.getBytes();
+            bos.close();
+            sendData = bos.toByteArray();
 
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, Integer.parseInt(add[1]));
             socket.send(sendPacket);
@@ -158,5 +173,9 @@ public class DistributedMachine {
         if(! memberList.contains(mc)) {
             memberList.add(mc);
         }
+    }
+
+    public static MemberList getMemberList() {
+        return memberList;
     }
 }

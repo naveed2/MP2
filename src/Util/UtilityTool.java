@@ -1,5 +1,13 @@
+package Util;
+
+import org.apache.log4j.Logger;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class UtilityTool {
+
+    private static Logger logger = Logger.getLogger(UtilityTool.class);
 
     public static boolean isIPAddress(String str) {
         String[] res = str.split(":");
@@ -28,6 +36,16 @@ public class UtilityTool {
                     + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
                     + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$" ;
         return ip.matches(regex);
+    }
+
+    public static InetAddress getInetAddress(String ip) {
+
+        try {
+            return InetAddress.getByName(ip);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }
