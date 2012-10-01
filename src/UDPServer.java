@@ -1,11 +1,9 @@
+import Message.MessageQueue;
 import org.apache.log4j.Logger;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.SocketAddress;
 import java.net.SocketException;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Used by contact machine. This is UDP server.
