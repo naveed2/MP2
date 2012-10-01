@@ -12,7 +12,7 @@ public class msg {
 		
 		InetAddress address = InetAddress.getLocalHost();
 		Timestamp timestamp = Timestamp.valueOf("2012-09-29 12:12:12.22");
-		Message msg =Message.generateJoinMessage(address, 1, timestamp);
+		Message msg =Message.generateJoinMessage(address, 1, 0);
 		
 		msg.toxmlString();
 	}
