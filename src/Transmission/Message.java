@@ -25,7 +25,7 @@ public class Message {
 	//Message types, we have four types of message 
 	//join message i.e. 0, leave message i.e. 1, sync message i.e. 2, ping message i.e. 3 and ping ack message i.e. 4
 	
-	int _messageType;
+	int _messageType; //TODO: need to be refactored, using join/leave
 	public InetAddress _IP = null;
 	public UUID _id;
 	public int _time_stamp;
@@ -62,10 +62,9 @@ public class Message {
         return this;
     }
 
-	public Message generateLeaveMessage(InetAddress IP_leave, UUID id_join, int time_stamp_join){
+	public static Message generateLeaveMessage(UUID id_join, int time_stamp_join){
 		Message msg = new Message();
 		msg._messageType = 1;
-		msg._IP = IP_leave;
 		msg._id = id_join;
 		msg._time_stamp = time_stamp_join;
 		return msg;

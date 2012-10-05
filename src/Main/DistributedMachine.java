@@ -16,6 +16,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DistributedMachine {
 
@@ -25,6 +26,8 @@ public class DistributedMachine {
 
     private static MemberList memberList;
     private static CommandMap commandMap;
+    private static UUID uuid;
+    private static AtomicInteger timestamp;
 
     public static void main(String[] args) {
         log4jConfigure();
@@ -38,9 +41,13 @@ public class DistributedMachine {
     }
 
     private static void init() {
-        printWelcomeMessage();
+
         commandMap = CommandMap.getInstance().initialize();
         memberList = new MemberList();
+        uuid = UUID.randomUUID();
+        timestamp = new AtomicInteger(0);
+
+        printWelcomeMessage();
         startUDPServer(inputPortNumber());
     }
 
@@ -141,18 +148,43 @@ public class DistributedMachine {
             DatagramSocket socket = new DatagramSocket();
             address = InetAddress.getByName(add[0]);
 
-            Message joinMessage = Message.generateJoinMessage(address, UUID.randomUUID(), 0);
+            Message joinMessage = Message.generateJoinMessage(address, uuid, timestamp.addAndGet(1));
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
             joinMessage.toxmlString(bos);
             bos.close();
             sendData = bos.toByteArray();
 
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, Integer.parseInt(add[1]));
             socket.send(sendPacket);
+
+            logger.info("join group, contact server: " + str);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void leaveGroup() {
+        try {
+            DatagramSocket socket = new DatagramSocket();
+            for(MachineInfo mi: getMemberList().getAll()) {
+                String[] add = mi.getAddress().split(":");
+                InetAddress addres = InetAddress.getByName(add[0]);
+                Message leaveMessage = Message.generateLeaveMessage(uuid, timestamp.addAndGet(1));
+
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                leaveMessage.toxmlString(bos);
+                bos.close();
+                byte[] sendData;
+                sendData = bos.toByteArray();
+
+                DatagramPacket sendPacket = new DatagramPacket(sendData,sendData.length, addres, Integer.parseInt(add[1]));
+                socket.send(sendPacket);
+            }
+            logger.info("Leave group");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.toString());
         }
     }
 
@@ -174,6 +206,12 @@ public class DistributedMachine {
     public static void addMachine(MachineInfo mi) {
         if(! memberList.contains(mi)) {
             memberList.add(mi);
+        }
+    }
+
+    public static void removeMachine(MachineInfo mi) {
+        if( memberList.contains(mi)) {
+            memberList.remove(mi);
         }
     }
 

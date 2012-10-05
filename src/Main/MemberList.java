@@ -16,18 +16,18 @@ public class MemberList {
 	}
 
 
-    public void add(MachineInfo mc) {
+    public void add(MachineInfo mi) {
         synchronized (this) {
-            if(! this.contains(mc)) {
-                list.add(mc);
+            if(! this.contains(mi)) {
+                list.add(mi);
             }
         }
     }
 	
 
-	public void remove(String key){
+	public void remove(MachineInfo mi){
         synchronized (this) {
-		    list.remove(key);
+		    list.remove(mi);
         }
 	}
 

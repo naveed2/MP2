@@ -38,6 +38,8 @@ public class UDPServer {
             public void onReceivingMessage(EventMessage m) {
                 if(m.getEventType() == EventMessage.EventType.Join) {
                     joinMachine(m);
+                } else if (m.getEventType() == EventMessage.EventType.Leave) {
+                    leaveMachine(m);
                 }
             }
         });
@@ -46,6 +48,11 @@ public class UDPServer {
     private void joinMachine(EventMessage m) {
         MachineInfo mi = m.getMachineInfo();
         DistributedMachine.addMachine(mi);
+    }
+
+    private void leaveMachine(EventMessage m) {
+        MachineInfo mi = m.getMachineInfo();
+        DistributedMachine.removeMachine(mi);
     }
 
     public void start() throws SocketException {

@@ -18,6 +18,9 @@ public class CommandMap {
     private static final String CMD_CONNECT_CONTACT_SERVER = "connect";
     private static final String FUNC_CONNECT_CONTACT_SERVER = "connectContactServer";
 
+    private static final String CMD_LEAVE_GROUP = "leave";
+    private static final String FUNC_LEAVE_GROUP = "leaveGroup";
+
     private static final String CMD_SHOW_MEMBER_LIST = "show";
     private static final String FUNC_SHOW_MEMBER_LIST = "showMemberList";
 
@@ -38,6 +41,7 @@ public class CommandMap {
 
         stringToFuncName.put(CMD_START_CONTACT_SERVER, FUNC_START_CONTACT_SERVER);
         stringToFuncName.put(CMD_CONNECT_CONTACT_SERVER, FUNC_CONNECT_CONTACT_SERVER);
+        stringToFuncName.put(CMD_LEAVE_GROUP, FUNC_LEAVE_GROUP);
         stringToFuncName.put(CMD_SHOW_MEMBER_LIST, FUNC_SHOW_MEMBER_LIST);
         stringToFuncName.put(CMD_HELP, FUNC_HELP);
 
