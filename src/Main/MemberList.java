@@ -1,3 +1,5 @@
+package Main;
+
 import Server.MachineInfo;
 
 import java.util.*;
@@ -16,7 +18,9 @@ public class MemberList {
 
     public void add(MachineInfo mc) {
         synchronized (this) {
-            list.add(mc);
+            if(! this.contains(mc)) {
+                list.add(mc);
+            }
         }
     }
 	

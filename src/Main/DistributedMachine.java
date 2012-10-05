@@ -1,8 +1,9 @@
+package Main;
+
 import Transmission.Message;
 import Server.MachineInfo;
 import Server.UDPServer;
 import Util.UtilityTool;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -39,6 +40,7 @@ public class DistributedMachine {
     private static void init() {
         printWelcomeMessage();
         commandMap = CommandMap.getInstance().initialize();
+        memberList = new MemberList();
         startUDPServer(inputPortNumber());
     }
 
@@ -169,9 +171,9 @@ public class DistributedMachine {
         CommandMap.printHelp();
     }
 
-    public static void addMachine(MachineInfo mc) {
-        if(! memberList.contains(mc)) {
-            memberList.add(mc);
+    public static void addMachine(MachineInfo mi) {
+        if(! memberList.contains(mi)) {
+            memberList.add(mi);
         }
     }
 

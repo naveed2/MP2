@@ -1,5 +1,6 @@
 package Server;
 
+import Main.DistributedMachine;
 import Transmission.EventMessage;
 import Transmission.EventMessageQueue;
 import Transmission.Message;
@@ -35,9 +36,16 @@ public class UDPServer {
         eventMessageQueue = new EventMessageQueue();
         eventMessageQueue.addMessageReceivedListener(new MessageReceivedListener() {
             public void onReceivingMessage(EventMessage m) {
-                //TODO
+                if(m.getEventType() == EventMessage.EventType.Join) {
+                    joinMachine(m);
+                }
             }
         });
+    }
+
+    private void joinMachine(EventMessage m) {
+        MachineInfo mi = m.getMachineInfo();
+        DistributedMachine.addMachine(mi);
     }
 
     public void start() throws SocketException {
@@ -59,6 +67,9 @@ public class UDPServer {
 
                         SocketAddress sa = receivePacket.getSocketAddress();
                         String[] address = sa.toString().split(":");
+                        if(address[0].startsWith("/")) {
+                            address[0] = address[0].substring(1);
+                        }
 
                         MachineInfo machineInfo = new MachineInfo(address[0], Integer.parseInt(address[1]));
                         machineInfo.setUUID(uuid).setTimestamp(timestamp);

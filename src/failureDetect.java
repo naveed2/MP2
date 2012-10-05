@@ -4,7 +4,7 @@ import java.net.UnknownHostException;
 
 public class failureDetect {
 
-//	public MemberList detect(MemberList list) throws UnknownHostException, IOException {
+//	public MemberList detect(Main.MemberList list) throws UnknownHostException, IOException {
 //
 //		for (String key : list.keySet()) {
 //			if (!ping(key)) {
