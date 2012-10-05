@@ -82,10 +82,15 @@ public class UDPServer {
                         machineInfo.setUUID(uuid).setTimestamp(timestamp);
 
                         EventMessage em = null;
+                        System.out.println("type = " + type);
                         if(type == 0 ) {
                             em = new EventMessage(EventMessage.EventType.Join);
                             em.setMachineInfo(machineInfo);
-
+                            logger.info("Receive an join message");
+                        } else if(type == 1) {
+                            em = new EventMessage(EventMessage.EventType.Leave);
+                            em.setMachineInfo(machineInfo);
+                            logger.info("Receive an leave message");
                         } else if (type == -1){
                             logger.error("Receive an unknown type message");
                         }
@@ -95,10 +100,10 @@ public class UDPServer {
                         }
 
 
-                        //TODO:for test
-                        System.out.println();
-                        System.out.println(receiveString);
-                        System.out.print(">");
+                        logger.info("Receive " + receiveString);
+//                        System.out.println();
+//                        System.out.println(receiveString);
+//                        System.out.print(">");
                     }
                 } catch(Exception ex) {
                     ex.printStackTrace();

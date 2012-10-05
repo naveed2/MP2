@@ -10,10 +10,7 @@ import org.apache.log4j.PropertyConfigurator;
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,7 +45,7 @@ public class DistributedMachine {
         timestamp = new AtomicInteger(0);
 
         printWelcomeMessage();
-        startUDPServer(inputPortNumber());
+        startUDPServer();
     }
 
     private static void log4jConfigure() {
@@ -111,13 +108,20 @@ public class DistributedMachine {
         System.out.println("Author: Muhammad Naveed, Junjie Hu");
     }
 
-    private static void startUDPServer(int port) {
-        server = new UDPServer(port);
-        try {
-            server.start();
-        } catch (SocketException e) {
-            e.printStackTrace();
-            logger.error(e.toString());
+    private static void startUDPServer() {
+        while(true){
+            int port = inputPortNumber();
+            server = new UDPServer(port);
+            try {
+                server.start();
+                return;
+            } catch (BindException e) {
+                System.out.println("Port is already in use");
+                logger.info("UDP server port invalid");
+            } catch (SocketException e) {
+                e.printStackTrace();
+                logger.error(e.toString());
+            }
         }
     }
 
@@ -169,7 +173,7 @@ public class DistributedMachine {
             DatagramSocket socket = new DatagramSocket();
             for(MachineInfo mi: getMemberList().getAll()) {
                 String[] add = mi.getAddress().split(":");
-                InetAddress addres = InetAddress.getByName(add[0]);
+                InetAddress address = InetAddress.getByName(add[0]);
                 Message leaveMessage = Message.generateLeaveMessage(uuid, timestamp.addAndGet(1));
 
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -178,9 +182,11 @@ public class DistributedMachine {
                 byte[] sendData;
                 sendData = bos.toByteArray();
 
-                DatagramPacket sendPacket = new DatagramPacket(sendData,sendData.length, addres, Integer.parseInt(add[1]));
+                System.out.println("leave address: " + address.toString() + ":" + add[1]);
+                DatagramPacket sendPacket = new DatagramPacket(sendData,sendData.length, address, Integer.parseInt(add[1]));
                 socket.send(sendPacket);
             }
+            getMemberList().clear();
             logger.info("Leave group");
         } catch (Exception e) {
             e.printStackTrace();

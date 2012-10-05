@@ -54,4 +54,10 @@ public class MemberList {
         }
     }
 
+    public void clear() {
+        synchronized (this) {
+            list = new LinkedList<MachineInfo>();
+        }
+    }
+
 }

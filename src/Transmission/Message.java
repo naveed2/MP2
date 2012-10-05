@@ -26,9 +26,10 @@ public class Message {
 	//join message i.e. 0, leave message i.e. 1, sync message i.e. 2, ping message i.e. 3 and ping ack message i.e. 4
 	
 	int _messageType; //TODO: need to be refactored, using join/leave
-	public InetAddress _IP = null;
-	public UUID _id;
-	public int _time_stamp;
+	private InetAddress _IP = null;
+	private UUID _id;
+	private int _time_stamp;
+    private int serverPort;
 
     private static Logger logger = Logger.getLogger(Message.class);
 
@@ -65,6 +66,7 @@ public class Message {
 	public static Message generateLeaveMessage(UUID id_join, int time_stamp_join){
 		Message msg = new Message();
 		msg._messageType = 1;
+        msg._IP = null;
 		msg._id = id_join;
 		msg._time_stamp = time_stamp_join;
 		return msg;
@@ -182,7 +184,11 @@ public class Message {
 		root.appendChild(messageType);		
 		
 		Element IP = doc.createElement("ip");
-		IP.appendChild(doc.createTextNode(_IP.getHostAddress()));
+        if(_IP != null) {
+		    IP.appendChild(doc.createTextNode(_IP.getHostAddress()));
+        } else {
+            IP.appendChild(doc.createTextNode(""));
+        }
 		root.appendChild(IP);
 		
 		Element id = doc.createElement("id");
