@@ -36,6 +36,7 @@ public class UDPServer {
         eventMessageQueue = new EventMessageQueue();
         eventMessageQueue.addMessageReceivedListener(new MessageReceivedListener() {
             public void onReceivingMessage(EventMessage m) {
+                DistributedMachine.getTimestamp().incrementAndGet();
                 if(m.getEventType() == EventMessage.EventType.Join) {
                     joinMachine(m);
                 } else if (m.getEventType() == EventMessage.EventType.Leave) {

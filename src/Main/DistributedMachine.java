@@ -153,7 +153,7 @@ public class DistributedMachine {
             DatagramSocket socket = new DatagramSocket();
             address = InetAddress.getByName(add[0]);
 
-            Message joinMessage = Message.generateJoinMessage(address, uuid, timestamp.addAndGet(1));
+            Message joinMessage = Message.generateJoinMessage(address, uuid, timestamp.incrementAndGet());
             joinMessage.setServerPort(port);
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -176,7 +176,7 @@ public class DistributedMachine {
             for(MachineInfo mi: getMemberList().getAll()) {
                 String[] add = mi.getAddress().split(":");
                 InetAddress address = InetAddress.getByName(add[0]);
-                Message leaveMessage = Message.generateLeaveMessage(uuid, timestamp.addAndGet(1));
+                Message leaveMessage = Message.generateLeaveMessage(uuid, timestamp.incrementAndGet());
 
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 leaveMessage.toxmlString(bos);
@@ -225,5 +225,9 @@ public class DistributedMachine {
 
     public static MemberList getMemberList() {
         return memberList;
+    }
+
+    public static AtomicInteger getTimestamp() {
+        return timestamp;
     }
 }
