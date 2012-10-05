@@ -25,6 +25,7 @@ public class DistributedMachine {
     private static CommandMap commandMap;
     private static UUID uuid;
     private static AtomicInteger timestamp;
+    private static int port;
 
     public static void main(String[] args) {
         log4jConfigure();
@@ -110,7 +111,7 @@ public class DistributedMachine {
 
     private static void startUDPServer() {
         while(true){
-            int port = inputPortNumber();
+            port = inputPortNumber();
             server = new UDPServer(port);
             try {
                 server.start();
@@ -153,6 +154,7 @@ public class DistributedMachine {
             address = InetAddress.getByName(add[0]);
 
             Message joinMessage = Message.generateJoinMessage(address, uuid, timestamp.addAndGet(1));
+            joinMessage.setServerPort(port);
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             joinMessage.toxmlString(bos);

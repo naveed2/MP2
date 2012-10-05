@@ -71,6 +71,7 @@ public class UDPServer {
                         UUID uuid = Message.getUUIDFromMessageString(receiveString);
                         int timestamp = Message.getTimestampFromMessageString(receiveString);
                         int type = Message.getTypeFromMessageString(receiveString);
+                        int port = Message.getPortFromMessageString(receiveString);
 
                         SocketAddress sa = receivePacket.getSocketAddress();
                         String[] address = sa.toString().split(":");
@@ -78,7 +79,7 @@ public class UDPServer {
                             address[0] = address[0].substring(1);
                         }
 
-                        MachineInfo machineInfo = new MachineInfo(address[0], Integer.parseInt(address[1]));
+                        MachineInfo machineInfo = new MachineInfo(address[0], port);
                         machineInfo.setUUID(uuid).setTimestamp(timestamp);
 
                         EventMessage em = null;

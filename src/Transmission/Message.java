@@ -166,6 +166,27 @@ public class Message {
         return null;
     }
 
+    public static Integer getPortFromMessageString(String xmlStr) {
+        try {
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+            Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr.trim())));
+
+            String port = doc.getElementsByTagName("port").item(0).getFirstChild().getNodeValue();
+
+            return Integer.parseInt(port);
+
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+            logger.error(e.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.toString());
+        }
+        return null;
+    }
+
 	public void toxmlString(OutputStream os) throws ParserConfigurationException, TransformerException{
 		//return Integer.toString(messageType) + IP.toString() + Integer.toString()
 
@@ -190,6 +211,10 @@ public class Message {
             IP.appendChild(doc.createTextNode(""));
         }
 		root.appendChild(IP);
+
+        Element port = doc.createElement("port");
+        port.appendChild(doc.createTextNode(String.valueOf(serverPort)));
+        root.appendChild(port);
 		
 		Element id = doc.createElement("id");
 		id.appendChild(doc.createTextNode(_id.toString()));
@@ -215,6 +240,10 @@ public class Message {
 		
 		
 	}
+
+    public void setServerPort(int serverPort) {
+        this.serverPort = serverPort;
+    }
 	
 	
 
