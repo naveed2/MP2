@@ -11,7 +11,7 @@ public class MachineInfo {
     private MachineState state;
 
     public enum MachineState {
-        Connected, Failed,
+        Connected, Failed, Leaved
     }
 
     public MachineInfo(String ip, int port) {
@@ -80,6 +80,14 @@ public class MachineInfo {
         }
         return this;
     }
+
+    public MachineInfo setStateLeaved() {
+        synchronized (this) {
+            state = MachineState.Leaved;
+        }
+        return this;
+    }
+
 
     public MachineState getState() {
         return state;
