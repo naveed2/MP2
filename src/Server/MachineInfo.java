@@ -1,12 +1,13 @@
 package Server;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MachineInfo {
     private String ip;
     private Integer port;
     private UUID uuid;
-    private int timestamp;
+    private AtomicInteger timestamp;
     private MachineState state;
 
     public enum MachineState {
@@ -24,8 +25,29 @@ public class MachineInfo {
     }
 
     public MachineInfo setTimestamp(int timestamp) {
-        this.timestamp = timestamp;
+        synchronized (this) {
+            this.timestamp.set(timestamp);
+        }
         return this;
+    }
+
+    public Integer getTimestamp() {
+        synchronized (this) {
+            return timestamp.get();
+        }
+    }
+
+    public MachineInfo updateState(MachineInfo mi) {
+        this.state = mi.getState();
+        return this;
+    }
+
+    public void maximizeTimestamp(int timestamp) {
+        synchronized (this) {
+            if(this.timestamp.get() < timestamp) {
+                this.timestamp.set(timestamp);
+            }
+        }
     }
 
     public String getAddress() {
@@ -48,5 +70,9 @@ public class MachineInfo {
             state = MachineState.Failed;
         }
         return this;
+    }
+
+    public MachineState getState() {
+        return state;
     }
 }

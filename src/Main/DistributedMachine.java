@@ -225,6 +225,8 @@ public class DistributedMachine {
     public static void addMachine(MachineInfo mi) {
         if(! memberList.contains(mi)) {
             memberList.add(mi);
+        } else {
+            memberList.updateMachineInfo(mi);
         }
     }
 

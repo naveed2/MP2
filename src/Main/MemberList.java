@@ -54,6 +54,20 @@ public class MemberList {
         }
     }
 
+    public void updateMachineInfo(MachineInfo mi) {
+        synchronized (this) {
+            for(MachineInfo cur : list) {
+                if(cur.getUUID().equals(mi.getUUID())) {
+                    if(cur.getTimestamp() < mi.getTimestamp()) {
+                        cur.setTimestamp(mi.getTimestamp());
+                        cur.updateState(mi);
+                    }
+                    return;
+                }
+            }
+        }
+    }
+
     public void clear() {
         synchronized (this) {
             list = new LinkedList<MachineInfo>();
