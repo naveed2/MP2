@@ -97,11 +97,12 @@ public class UDPServer {
 
                         EventMessage em = null;
                         System.out.println("type = " + type);
-                        if(type == 0 ) {
+                        if(type == 0 ) {    // join message
+                            machineInfo.setStateConnected();
                             em = new EventMessage(EventMessage.EventType.Join);
                             em.setMachineInfo(machineInfo);
                             logger.info("Receive an join message");
-                        } else if(type == 1) {
+                        } else if(type == 1) { //leave message
                             em = new EventMessage(EventMessage.EventType.Leave);
                             em.setMachineInfo(machineInfo);
                             logger.info("Receive an leave message");

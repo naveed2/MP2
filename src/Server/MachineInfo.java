@@ -7,6 +7,11 @@ public class MachineInfo {
     private Integer port;
     private UUID uuid;
     private int timestamp;
+    private MachineState state;
+
+    public enum MachineState {
+        Connected, Failed,
+    }
 
     public MachineInfo(String ip, int port) {
         this.ip = ip;
@@ -31,4 +36,17 @@ public class MachineInfo {
         return uuid;
     }
 
+    public MachineInfo setStateConnected() {
+        synchronized (this) {
+            state = MachineState.Connected;
+        }
+        return this;
+    }
+
+    public MachineInfo setStateFailed() {
+        synchronized (this) {
+            state = MachineState.Failed;
+        }
+        return this;
+    }
 }
