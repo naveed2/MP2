@@ -82,7 +82,7 @@ public class Message {
     public static Message generateSyncEntry(MachineInfo mi) throws UnknownHostException {
 
         Message msg = new Message();
-        msg._IP = InetAddress.getByName(mi.getAddress());
+        msg._IP = InetAddress.getByName(mi.getIP());
         msg._id = mi.getUUID();
         msg._time_stamp = mi.getTimestamp();
         return msg;
