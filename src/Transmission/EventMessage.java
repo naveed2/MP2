@@ -9,7 +9,7 @@ import Main.MemberList;
 public class EventMessage {
 
     public enum EventType {
-        Join, Leave, Sync;
+        Join, Leave, Sync, Ping, Ping_ACK;
     }
 
     private MachineInfo machineInfo;
