@@ -196,66 +196,6 @@ public class Message {
         return null;
     }
 
-    public void toxmlSyncString(OutputStream os, MemberList list) throws ParserConfigurationException, TransformerException, UnknownHostException {
-        //return Integer.toString(messageType) + IP.toString() + Integer.toString()
-
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-        Document doc = docBuilder.newDocument();
-
-        Element root = doc.createElement("message");
-        doc.appendChild(root);
-
-        for (int i = 0; i < list.size(); i++) {
-
-            Message msg = generateSyncMessage(list.get(i));
-
-            Element machine = doc.createElement("machine");
-            root.appendChild(machine);
-
-
-            Element messageType = doc.createElement("messagetype");
-            messageType.appendChild(doc.createTextNode(Integer.toString(msg._messageType)));
-            machine.appendChild(messageType);
-
-            Element IP = doc.createElement("ip");
-            if (_IP != null) {
-                IP.appendChild(doc.createTextNode(msg._IP.getHostAddress()));
-            } else {
-                IP.appendChild(doc.createTextNode(""));
-            }
-            machine.appendChild(IP);
-
-            Element port = doc.createElement("port");
-            port.appendChild(doc.createTextNode(String.valueOf(msg.serverPort)));
-            machine.appendChild(port);
-
-            Element id = doc.createElement("id");
-            id.appendChild(doc.createTextNode(_id.toString()));
-            machine.appendChild(id);
-
-            Element time_stamp = doc.createElement("timestamp");
-            time_stamp.appendChild(doc.createTextNode(Integer.toString(msg._time_stamp)));
-            machine.appendChild(time_stamp);
-        }
-
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult(new File("syncmessage.xml"));
-
-        StreamResult result1 = new StreamResult(os);
-
-        transformer.transform(source, result);
-        transformer.transform(source, result1);
-
-        //TODO:why we need to save a file?
-        System.out.println("File saved!");
-
-
-
-    }
-
     public void toxmlString(OutputStream os) throws ParserConfigurationException, TransformerException {
         //return Integer.toString(messageType) + IP.toString() + Integer.toString()
 
@@ -292,6 +232,92 @@ public class Message {
         Element time_stamp = doc.createElement("timestamp");
         time_stamp.appendChild(doc.createTextNode(Integer.toString(_time_stamp)));
         root.appendChild(time_stamp);
+
+
+
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(new File("message.xml"));
+
+        StreamResult result1 = new StreamResult(os);
+
+        transformer.transform(source, result);
+        transformer.transform(source, result1);
+
+        //TODO:why we need to save a file?
+        System.out.println("File saved!");
+
+
+
+    }
+
+    public void toxmlString(OutputStream os, MemberList list) throws ParserConfigurationException, TransformerException, UnknownHostException {
+        //return Integer.toString(messageType) + IP.toString() + Integer.toString()
+
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+        Document doc = docBuilder.newDocument();
+
+        Element root = doc.createElement("message");
+        doc.appendChild(root);
+
+
+
+
+        Element messageType = doc.createElement("messagetype");
+        messageType.appendChild(doc.createTextNode(Integer.toString(_messageType)));
+        root.appendChild(messageType);
+
+        Element IP = doc.createElement("ip");
+        if (_IP != null) {
+            IP.appendChild(doc.createTextNode(_IP.getHostAddress()));
+        } else {
+            IP.appendChild(doc.createTextNode(""));
+        }
+        root.appendChild(IP);
+
+        Element port = doc.createElement("port");
+        port.appendChild(doc.createTextNode(String.valueOf(serverPort)));
+        root.appendChild(port);
+
+        Element id = doc.createElement("id");
+        id.appendChild(doc.createTextNode(_id.toString()));
+        root.appendChild(id);
+
+        Element time_stamp = doc.createElement("timestamp");
+        time_stamp.appendChild(doc.createTextNode(Integer.toString(_time_stamp)));
+        root.appendChild(time_stamp);
+
+        for (int i = 0; i < list.size(); i++) {
+
+            Message msg = generateSyncMessage(list.get(i));
+            Element machine = doc.createElement("machine");
+            root.appendChild(machine);
+
+            Element IP_member = doc.createElement("ip");
+            if (_IP != null) {
+                IP_member.appendChild(doc.createTextNode(msg._IP.getHostAddress()));
+            } else {
+                IP_member.appendChild(doc.createTextNode(""));
+            }
+            machine.appendChild(IP_member);
+
+            Element port_member = doc.createElement("port");
+            port_member.appendChild(doc.createTextNode(String.valueOf(msg.serverPort)));
+            machine.appendChild(port_member);
+
+            Element id_member = doc.createElement("id");
+            id_member.appendChild(doc.createTextNode(_id.toString()));
+            machine.appendChild(id_member);
+
+            Element time_stamp_member = doc.createElement("timestamp");
+            time_stamp_member.appendChild(doc.createTextNode(Integer.toString(msg._time_stamp)));
+            machine.appendChild(time_stamp_member);
+
+        }
+
+
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
