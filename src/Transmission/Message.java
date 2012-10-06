@@ -69,11 +69,19 @@ public class Message {
         msg._time_stamp = time_stamp_join;
         return msg;
     }
-
-    public static Message generateSyncMessage(MachineInfo mi) throws UnknownHostException {
-
+    
+    public static Message generateSyncMessage(InetAddress IP_join, UUID id_join, int time_stamp_join) {
         Message msg = new Message();
         msg._messageType = 2;
+        msg._IP = IP_join;
+        msg._id = id_join;
+        msg._time_stamp = time_stamp_join;
+        return msg;
+    }
+
+    public static Message generateSyncEntry(MachineInfo mi) throws UnknownHostException {
+
+        Message msg = new Message();
         msg._IP = InetAddress.getByName(mi.getAddress());
         msg._id = mi.getUUID();
         msg._time_stamp = mi.getTimestamp();
@@ -320,7 +328,7 @@ public class Message {
 
         for (int i = 0; i < list.size(); i++) {
 
-            Message msg = generateSyncMessage(list.get(i));
+            Message msg = generateSyncEntry(list.get(i));
             Element machine = doc.createElement("machine");
             root.appendChild(machine);
 

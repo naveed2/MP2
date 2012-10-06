@@ -42,8 +42,10 @@ public class UDPServer {
                 DistributedMachine.getTimestamp().incrementAndGet();
                 if(m.getEventType() == EventMessage.EventType.Join) {
                     joinMachine(m);
+                    DistributedMachine.Sync();
                 } else if (m.getEventType() == EventMessage.EventType.Leave) {
                     leaveMachine(m);
+                    DistributedMachine.Sync();
                 } else if (m.getEventType() == EventMessage.EventType.Sync){
                     syncMachine(m);
                 }

@@ -3,24 +3,27 @@ package Main;
 import Transmission.Message;
 import Server.MachineInfo;
 import Server.UDPServer;
+import Transmission.EventMessage;
 import Util.UtilityTool;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.*;
 import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 public class DistributedMachine {
 
     private static Scanner in = new Scanner(System.in);
     private static UDPServer server;
     private static Logger logger = Logger.getLogger(DistributedMachine.class);
-
     private static MemberList memberList;
     private static CommandMap commandMap;
     private static UUID uuid;
@@ -29,11 +32,12 @@ public class DistributedMachine {
 
     /**
      * Main entry of the program
+     *
      * @param args
      */
     public static void main(String[] args) {
         log4jConfigure();
-        try{
+        try {
             init();
             work();
         } catch (Exception ex) {
@@ -59,13 +63,13 @@ public class DistributedMachine {
 
     private static void work() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
-        while(true) {
+        while (true) {
             String cmd = inputCommand();
             String funcName;
 
             funcName = commandMap.findCommand(cmd);
 
-            if(funcName == null) {
+            if (funcName == null) {
                 wrongCommand();
             } else {
                 Method method = DistributedMachine.class.getDeclaredMethod(funcName);
@@ -82,6 +86,7 @@ public class DistributedMachine {
 
     /**
      * Read input command from console.
+     *
      * @return
      */
     private static String inputCommand() {
@@ -92,7 +97,7 @@ public class DistributedMachine {
     private static String inputAddress() {
         System.out.print("Input the address: ");
         String str = in.nextLine();
-        if(UtilityTool.isIPAddress(str)) {
+        if (UtilityTool.isIPAddress(str)) {
             return str;
         }
         return null;
@@ -105,7 +110,7 @@ public class DistributedMachine {
 
         try {
             ret = Integer.parseInt(str);
-        } catch(NumberFormatException ex) {
+        } catch (NumberFormatException ex) {
             logger.info("Number format error");
             return 0;
         }
@@ -121,7 +126,7 @@ public class DistributedMachine {
      * Start a UDP server that receives packets from other machines.
      */
     private static void startUDPServer() {
-        while(true){
+        while (true) {
             port = inputPortNumber();
             server = new UDPServer(port);
             try {
@@ -137,7 +142,6 @@ public class DistributedMachine {
         }
     }
 
-
     private static void startContactServer() {
         int port = inputPortNumber();
         server = new UDPServer(port);
@@ -151,7 +155,7 @@ public class DistributedMachine {
 
     private static void connectContactServer() {
         String str = inputAddress();
-        if(str == null) {
+        if (str == null) {
             System.out.println("Wrong ip address");
             return;
         }
@@ -184,7 +188,7 @@ public class DistributedMachine {
     private static void leaveGroup() {
         try {
             DatagramSocket socket = new DatagramSocket();
-            for(MachineInfo mi: getMemberList().getAll()) {
+            for (MachineInfo mi : getMemberList().getAll()) {
                 String[] add = mi.getAddress().split(":");
                 InetAddress address = InetAddress.getByName(add[0]);
                 Message leaveMessage = Message.generateLeaveMessage(uuid, timestamp.incrementAndGet());
@@ -196,7 +200,7 @@ public class DistributedMachine {
                 sendData = bos.toByteArray();
 
                 System.out.println("leave address: " + address.toString() + ":" + add[1]);
-                DatagramPacket sendPacket = new DatagramPacket(sendData,sendData.length, address, Integer.parseInt(add[1]));
+                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, Integer.parseInt(add[1]));
                 socket.send(sendPacket);
             }
             getMemberList().clear();
@@ -207,13 +211,43 @@ public class DistributedMachine {
         }
     }
 
+    private static void Sync() throws ParserConfigurationException, TransformerException, UnknownHostException, IOException {
+
+        MemberList list = DistributedMachine.getMemberList();
+
+
+        byte[] sendData;
+        DatagramSocket socket = new DatagramSocket();
+
+        for (MachineInfo mi : list.getAll()) {
+            InetAddress address = null;
+            String str = mi.getAddress();
+            String[] add = str.split(":");
+            address = InetAddress.getByName(add[0]);
+
+            Message syncMessage = Message.generateSyncMessage(address, uuid, timestamp.incrementAndGet());
+            syncMessage.setServerPort(port);
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            syncMessage.toxmlString(bos, list);
+            bos.close();
+            sendData = bos.toByteArray();
+
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, Integer.parseInt(add[1]));
+            socket.send(sendPacket);
+
+            logger.info("join group, contact server: " + str);
+
+        }
+    }
+
     private static void showMemberList() {
-        if(memberList.size() == 0) {
+        if (memberList.size() == 0) {
             System.out.println("no machine in the member list");
             return;
         }
 
-        for(MachineInfo mi : memberList.getAll()) {
+        for (MachineInfo mi : memberList.getAll()) {
             System.out.println(mi.getAddress() + "\t" + mi.getState().toString() + "\t" + mi.getTimestamp());
         }
     }
@@ -223,7 +257,7 @@ public class DistributedMachine {
     }
 
     public static void addMachine(MachineInfo mi) {
-        if(! memberList.contains(mi)) {
+        if (!memberList.contains(mi)) {
             memberList.add(mi);
         } else {
             memberList.updateMachineInfo(mi);
@@ -231,17 +265,30 @@ public class DistributedMachine {
     }
 
     public static void removeMachine(MachineInfo mi) {
-        if( memberList.contains(mi)) {
+        if (memberList.contains(mi)) {
             memberList.remove(mi);
         }
     }
-    
-    public static void syncMachine(MemberList list) {
-        
-        for(MachineInfo mi : list.getAll()){
-            list.updateMachineInfo(mi);
+
+    public static void syncMachine(EventMessage m) {
+
+        for (MachineInfo mi : m.getMemberList.getAll()) {
+            if (!memberList.contains(mi)) {
+                memberList.add(mi);
+            } else {
+                memberList.updateMachineInfo(mi);
+            }
         }
-        
+
+//        for (MachineInfo mi : memberList.getAll()) {
+//            if (!m.getMemberList.getAll().contains(mi)) {
+//                memberList.updateMachineInfo(mi);
+//                
+//        }
+
+
+
+
     }
 
     public static MemberList getMemberList() {
