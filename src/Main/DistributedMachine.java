@@ -235,6 +235,14 @@ public class DistributedMachine {
             memberList.remove(mi);
         }
     }
+    
+    public static void syncMachine(MemberList list) {
+        
+        for(MachineInfo mi : list.getAll()){
+            list.updateMachineInfo(mi);
+        }
+        
+    }
 
     public static MemberList getMemberList() {
         return memberList;

@@ -1,6 +1,7 @@
 package Transmission;
 
 import Server.MachineInfo;
+import Main.MemberList;
 
 /**
  * When <code>{@link Server.UDPServer}</code> receives a message, it will pack a {@link EventMessage}
@@ -8,11 +9,13 @@ import Server.MachineInfo;
 public class EventMessage {
 
     public enum EventType {
-        Join, Leave;
+        Join, Leave, Sync;
     }
 
     private MachineInfo machineInfo;
     private EventType type;
+    private MemberList list;
+    
 
     public EventMessage(EventType type) {
         this.type = type;
@@ -30,4 +33,9 @@ public class EventMessage {
     public MachineInfo getMachineInfo() {
         return this.machineInfo;
     }
+    
+    public MemberList getMemberList(){
+        return list;
+    }
+    
 }

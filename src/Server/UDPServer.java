@@ -44,11 +44,14 @@ public class UDPServer {
                     joinMachine(m);
                 } else if (m.getEventType() == EventMessage.EventType.Leave) {
                     leaveMachine(m);
+                } else if (m.getEventType() == EventMessage.EventType.Sync){
+                    syncMachine(m);
                 }
             }
         });
     }
 
+    
     private void joinMachine(EventMessage m) {
         MachineInfo mi = m.getMachineInfo();
         DistributedMachine.addMachine(mi);
@@ -58,6 +61,14 @@ public class UDPServer {
         MachineInfo mi = m.getMachineInfo();
         DistributedMachine.removeMachine(mi);
     }
+    
+    private void syncMachine(EventMessage m){
+        MemberList list = m.getMemberList();
+        DistributedMachine.syncMachine(list);
+        
+        
+    }
+    
 
     public EventMessageQueue getEventMessageQueue() {
         return eventMessageQueue;
@@ -85,6 +96,8 @@ public class UDPServer {
                         int timestamp = Message.getTimestampFromMessageString(receiveString);
                         int type = Message.getTypeFromMessageString(receiveString);
                         int port = Message.getPortFromMessageString(receiveString);
+                        
+                        
 
                         SocketAddress sa = receivePacket.getSocketAddress();
                         String[] address = sa.toString().split(":");
@@ -101,12 +114,19 @@ public class UDPServer {
                             machineInfo.setStateConnected();
                             em = new EventMessage(EventMessage.EventType.Join);
                             em.setMachineInfo(machineInfo);
-                            logger.info("Receive an join message");
+                            logger.info("Received a join message");
                         } else if(type == 1) { //leave message
                             em = new EventMessage(EventMessage.EventType.Leave);
                             em.setMachineInfo(machineInfo);
-                            logger.info("Receive an leave message");
-                        } else if (type == -1){
+                            logger.info("Received a leave message");
+                        } else if(type == 2) { //sync message
+                            em = new EventMessage(EventMessage.EventType.Sync);
+                            em.setMemberList(Message.getMemberListfromMessageString(receiveString));
+                            em.setMachineInfo(machineInfo);
+                            logger.info("Received a sync message");
+                        }
+                        
+                        else if (type == -1){
                             logger.error("Receive an unknown type message");
                         }
 

@@ -196,7 +196,7 @@ public class Message {
         return null;
     }
 
-    public MemberList getMemberListfromMessageString(String xmlStr) throws ParserConfigurationException, SAXException, IOException {
+    static public MemberList getMemberListfromMessageString(String xmlStr) throws ParserConfigurationException, SAXException, IOException {
         MemberList list = new MemberList();
 
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();

@@ -24,15 +24,15 @@ public class msg {
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-		msg.toxmlString(bos);
-        msg.toxmlString(System.out);
+		msg.toxmlSyncString(bos);
+        msg.toxmlSyncString(System.out);
         bos.close();
 
         String str = new String(bos.toByteArray());
         System.out.println(str);
 
         msg = Message.generateMessageFromString(str);
-        msg.toxmlString(System.out);
+        msg.toxmlSyncString(System.out);
 	}
 
 
