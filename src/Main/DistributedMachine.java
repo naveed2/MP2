@@ -27,6 +27,10 @@ public class DistributedMachine {
     private static AtomicInteger timestamp;
     private static int port;
 
+    /**
+     * Main entry of the program
+     * @param args
+     */
     public static void main(String[] args) {
         log4jConfigure();
         try{
@@ -76,6 +80,10 @@ public class DistributedMachine {
         System.out.println("Wrong command, please type 'help' for more information");
     }
 
+    /**
+     * Read input command from console.
+     * @return
+     */
     private static String inputCommand() {
         System.out.print(">");
         return in.nextLine();
@@ -109,6 +117,9 @@ public class DistributedMachine {
         System.out.println("Author: Muhammad Naveed, Junjie Hu");
     }
 
+    /**
+     * Start a UDP server that receives packets from other machines.
+     */
     private static void startUDPServer() {
         while(true){
             port = inputPortNumber();

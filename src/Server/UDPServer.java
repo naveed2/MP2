@@ -32,6 +32,9 @@ public class UDPServer {
         initMessageQueue();
     }
 
+    /**
+     * Add a MessageReceivedListener.
+     */
     private void initMessageQueue() {
         eventMessageQueue = new EventMessageQueue();
         eventMessageQueue.addMessageReceivedListener(new MessageReceivedListener() {
@@ -56,6 +59,15 @@ public class UDPServer {
         DistributedMachine.removeMachine(mi);
     }
 
+    public EventMessageQueue getEventMessageQueue() {
+        return eventMessageQueue;
+    }
+
+    /**
+     * Start UDP server. When receiving a message, it extracts the information from it and encapsulate them into
+     * an EventMessage object.
+     * @throws SocketException
+     */
     public void start() throws SocketException {
         serverSocket = new DatagramSocket(port);
         new Thread(new Runnable() {
