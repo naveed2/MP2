@@ -196,6 +196,35 @@ public class Message {
         return null;
     }
 
+    public MemberList getMemberListfromMessageString(String xmlStr) throws ParserConfigurationException, SAXException, IOException {
+        MemberList list = new MemberList();
+
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+        Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr.trim())));
+        NodeList machine = doc.getElementsByTagName("machine");
+
+        for (int i = 0; i < machine.getLength(); i++) {
+            Node machineNode = machine.item(i);
+            if (machineNode.getNodeType() == Node.ELEMENT_NODE) {
+
+                Element eElement = (Element) machineNode;
+                
+                String IP = eElement.getElementsByTagName("ip").item(0).getChildNodes().item(0).getNodeValue();
+                int port = Integer.parseInt(eElement.getElementsByTagName("port").item(0).getChildNodes().item(0).getNodeValue());
+                UUID id = UUID.fromString(eElement.getElementsByTagName("id").item(0).getChildNodes().item(0).getNodeValue());
+                int timestamp = Integer.parseInt(eElement.getElementsByTagName("timestamp").item(0).getChildNodes().item(0).getNodeValue());
+                
+                MachineInfo temp = new MachineInfo(IP, port);
+                temp.setUUID(id);
+                temp.setTimestamp(timestamp);
+                list.add(temp);
+            }
+        }
+        
+        return list;
+    }
+
     public void toxmlString(OutputStream os) throws ParserConfigurationException, TransformerException {
         //return Integer.toString(messageType) + IP.toString() + Integer.toString()
 
