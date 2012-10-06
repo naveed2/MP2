@@ -214,7 +214,7 @@ public class DistributedMachine {
         }
 
         for(MachineInfo mi : memberList.getAll()) {
-            System.out.println(mi.getAddress());
+            System.out.println(mi.getAddress() + "\t" + mi.getState().toString() + "\t" + mi.getTimestamp());
         }
     }
 

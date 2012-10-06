@@ -17,6 +17,7 @@ public class MachineInfo {
     public MachineInfo(String ip, int port) {
         this.ip = ip;
         this.port = port;
+        timestamp = new AtomicInteger(0);
     }
 
     public MachineInfo setUUID(UUID uuid) {
