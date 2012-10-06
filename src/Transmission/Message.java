@@ -69,7 +69,7 @@ public class Message {
         msg._time_stamp = time_stamp_join;
         return msg;
     }
-    
+
     public static Message generateSyncMessage(InetAddress IP_join, UUID id_join, int time_stamp_join) {
         Message msg = new Message();
         msg._messageType = 2;
@@ -217,23 +217,23 @@ public class Message {
             if (machineNode.getNodeType() == Node.ELEMENT_NODE) {
 
                 Element eElement = (Element) machineNode;
-                
+
                 String IP = eElement.getElementsByTagName("ip").item(0).getChildNodes().item(0).getNodeValue();
                 int port = Integer.parseInt(eElement.getElementsByTagName("port").item(0).getChildNodes().item(0).getNodeValue());
                 UUID id = UUID.fromString(eElement.getElementsByTagName("id").item(0).getChildNodes().item(0).getNodeValue());
                 int timestamp = Integer.parseInt(eElement.getElementsByTagName("timestamp").item(0).getChildNodes().item(0).getNodeValue());
-                
+
                 MachineInfo temp = new MachineInfo(IP, port);
                 temp.setUUID(id);
                 temp.setTimestamp(timestamp);
                 list.add(temp);
             }
         }
-        
+
         return list;
     }
 
-    public void toxmlString(OutputStream os) throws ParserConfigurationException, TransformerException {
+    public void toxmlString(OutputStream os, MachineInfo.MachineState state) throws ParserConfigurationException, TransformerException {
         //return Integer.toString(messageType) + IP.toString() + Integer.toString()
 
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -269,6 +269,10 @@ public class Message {
         Element time_stamp = doc.createElement("timestamp");
         time_stamp.appendChild(doc.createTextNode(Integer.toString(_time_stamp)));
         root.appendChild(time_stamp);
+
+        Element mstate = doc.createElement("state");
+        mstate.appendChild(doc.createTextNode(state.toString()));
+        root.appendChild(mstate);
 
 
 
@@ -289,7 +293,7 @@ public class Message {
 
     }
 
-    public void toxmlString(OutputStream os, MemberList list) throws ParserConfigurationException, TransformerException, UnknownHostException {
+    public void toxmlString(OutputStream os, MachineInfo.MachineState state, MemberList list) throws ParserConfigurationException, TransformerException, UnknownHostException {
         //return Integer.toString(messageType) + IP.toString() + Integer.toString()
 
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -325,6 +329,11 @@ public class Message {
         Element time_stamp = doc.createElement("timestamp");
         time_stamp.appendChild(doc.createTextNode(Integer.toString(_time_stamp)));
         root.appendChild(time_stamp);
+
+        Element mstate = doc.createElement("state");
+        mstate.appendChild(doc.createTextNode(state.toString()));
+        root.appendChild(mstate);
+
 
         for (int i = 0; i < list.size(); i++) {
 
@@ -351,6 +360,10 @@ public class Message {
             Element time_stamp_member = doc.createElement("timestamp");
             time_stamp_member.appendChild(doc.createTextNode(Integer.toString(msg._time_stamp)));
             machine.appendChild(time_stamp_member);
+
+            Element mmstate = doc.createElement("state");
+            mmstate.appendChild(doc.createTextNode(list.get(i).getState().toString()));
+            machine.appendChild(mmstate);
 
         }
 
