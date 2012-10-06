@@ -53,7 +53,8 @@ public class CommandMap {
     public static void printHelp() {
         System.out.printf(FORMAT_STRING, "COMMAND", "USAGE");
         System.out.printf(FORMAT_STRING, CMD_START_CONTACT_SERVER, "start as a contact server");
-        System.out.printf(FORMAT_STRING, CMD_CONNECT_CONTACT_SERVER + " ip:port", "connect the contact server");
+        System.out.printf(FORMAT_STRING, CMD_CONNECT_CONTACT_SERVER, "connect the contact server");
+        System.out.printf(FORMAT_STRING, CMD_LEAVE_GROUP, "leave group");
         System.out.printf(FORMAT_STRING, CMD_SHOW_MEMBER_LIST, "show the member list");
     }
 
