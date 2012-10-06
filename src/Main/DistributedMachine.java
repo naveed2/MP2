@@ -174,7 +174,7 @@ public class DistributedMachine {
             joinMessage.setServerPort(port);
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            joinMessage.toxmlString(bos);
+            joinMessage.toxmlString(bos, getState());
             bos.close();
             sendData = bos.toByteArray();
 
@@ -196,7 +196,7 @@ public class DistributedMachine {
                 Message leaveMessage = Message.generateLeaveMessage(uuid, timestamp.incrementAndGet());
 
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                leaveMessage.toxmlString(bos);
+                leaveMessage.toxmlString(bos, getState());
                 bos.close();
                 byte[] sendData;
                 sendData = bos.toByteArray();
@@ -231,7 +231,7 @@ public class DistributedMachine {
             syncMessage.setServerPort(port);
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            syncMessage.toxmlString(bos, list);
+            syncMessage.toxmlString(bos, mi.getState(), list);
             bos.close();
             sendData = bos.toByteArray();
 
