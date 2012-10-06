@@ -1,5 +1,7 @@
 package Transmission;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import org.apache.log4j.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -21,7 +23,7 @@ public class EventMessageQueue {
     }
 
 
-    public void add(EventMessage msg) {
+    public void add(EventMessage msg) throws ParserConfigurationException, TransformerException, UnknownHostException, IOException {
         synchronized (this) {
             eventQueue.add(msg);
             fireMessageReceiving();
@@ -49,7 +51,7 @@ public class EventMessageQueue {
         return this;
     }
 
-    public void fireMessageReceiving() {
+    public void fireMessageReceiving() throws ParserConfigurationException, TransformerException, UnknownHostException, IOException {
         EventMessage em = top();
         removeTop();
 

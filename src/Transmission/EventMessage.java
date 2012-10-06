@@ -38,4 +38,9 @@ public class EventMessage {
         return list;
     }
     
+    public EventMessage setMemberList(MemberList list){
+        this.list = list;
+        return this;
+    }
+    
 }

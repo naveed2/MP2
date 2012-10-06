@@ -4,7 +4,9 @@ import Main.DistributedMachine;
 import Transmission.EventMessage;
 import Transmission.EventMessageQueue;
 import Transmission.Message;
+import Main.MemberList;
 import Transmission.MessageReceivedListener;
+import java.io.IOException;
 import org.apache.log4j.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -13,6 +15,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.UUID;
 
 /**
@@ -38,7 +41,8 @@ public class UDPServer {
     private void initMessageQueue() {
         eventMessageQueue = new EventMessageQueue();
         eventMessageQueue.addMessageReceivedListener(new MessageReceivedListener() {
-            public void onReceivingMessage(EventMessage m) {
+           
+            public void onReceivingMessage(EventMessage m) throws ParserConfigurationException, TransformerException, UnknownHostException, IOException {
                 DistributedMachine.getTimestamp().incrementAndGet();
                 if(m.getEventType() == EventMessage.EventType.Join) {
                     joinMachine(m);
@@ -66,7 +70,7 @@ public class UDPServer {
     
     private void syncMachine(EventMessage m){
         MemberList list = m.getMemberList();
-        DistributedMachine.syncMachine(list);
+        DistributedMachine.syncMachine(m);
         
         
     }

@@ -211,7 +211,7 @@ public class DistributedMachine {
         }
     }
 
-    private static void Sync() throws ParserConfigurationException, TransformerException, UnknownHostException, IOException {
+    public static void Sync() throws ParserConfigurationException, TransformerException, UnknownHostException, IOException {
 
         MemberList list = DistributedMachine.getMemberList();
 
@@ -272,7 +272,7 @@ public class DistributedMachine {
 
     public static void syncMachine(EventMessage m) {
 
-        for (MachineInfo mi : m.getMemberList.getAll()) {
+        for (MachineInfo mi : m.getMemberList().getAll()) {
             if (!memberList.contains(mi)) {
                 memberList.add(mi);
             } else {

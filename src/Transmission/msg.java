@@ -1,7 +1,6 @@
 package Transmission;
 
 import Transmission.Message;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,15 +23,15 @@ public class msg {
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-		msg.toxmlSyncString(bos);
-        msg.toxmlSyncString(System.out);
+		msg.toxmlString(bos);
+        msg.toxmlString(System.out);
         bos.close();
 
         String str = new String(bos.toByteArray());
         System.out.println(str);
 
         msg = Message.generateMessageFromString(str);
-        msg.toxmlSyncString(System.out);
+        msg.toxmlString(System.out);
 	}
 
 
