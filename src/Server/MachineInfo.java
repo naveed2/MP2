@@ -54,6 +54,14 @@ public class MachineInfo {
     public String getAddress() {
         return ip + ":" + port;
     }
+    
+    public String getIP() {
+        return ip;
+    }
+    
+    public Integer getPort() {
+        return port;
+    }
 
     public UUID getUUID() {
         return uuid;

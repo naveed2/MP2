@@ -4,35 +4,37 @@ import Server.MachineInfo;
 
 import java.util.*;
 
-
 public class MemberList {
-	
 
     private List<MachineInfo> list;
-	
-	public MemberList(){
 
-		list = new LinkedList<MachineInfo>();
-	}
+    public MemberList() {
 
+        list = new LinkedList<MachineInfo>();
+    }
 
     public void add(MachineInfo mi) {
-        if(mi.getUUID().equals(DistributedMachine.getUUID())) { //don't need to add itself in memberlist
+        if (mi.getUUID().equals(DistributedMachine.getUUID())) { //don't need to add itself in memberlist
             return;
         }
         synchronized (this) {
-            if(! this.contains(mi)) {
+            if (!this.contains(mi)) {
                 list.add(mi);
             }
         }
     }
-	
 
-	public void remove(MachineInfo mi){
+    public void remove(MachineInfo mi) {
         synchronized (this) {
-		    list.remove(mi);
+            list.remove(mi);
         }
-	}
+    }
+
+    public MachineInfo get(int i) {
+        synchronized (this) {
+            return list.get(i);
+        }
+    }
 
     public List<MachineInfo> getAll() {
         synchronized (this) {
@@ -48,8 +50,8 @@ public class MemberList {
 
     public boolean contains(MachineInfo mc) {
         synchronized (this) {
-            for(MachineInfo tmp : list) {
-                if(tmp.getUUID().equals(mc.getUUID())) {
+            for (MachineInfo tmp : list) {
+                if (tmp.getUUID().equals(mc.getUUID())) {
                     return true;
                 }
             }
@@ -59,9 +61,9 @@ public class MemberList {
 
     public void updateMachineInfo(MachineInfo mi) {
         synchronized (this) {
-            for(MachineInfo cur : list) {
-                if(cur.getUUID().equals(mi.getUUID())) {
-                    if(cur.getTimestamp() < mi.getTimestamp()) {
+            for (MachineInfo cur : list) {
+                if (cur.getUUID().equals(mi.getUUID())) {
+                    if (cur.getTimestamp() < mi.getTimestamp()) {
                         cur.setTimestamp(mi.getTimestamp());
                         cur.updateState(mi);
                     }
@@ -76,5 +78,4 @@ public class MemberList {
             list = new LinkedList<MachineInfo>();
         }
     }
-
 }
