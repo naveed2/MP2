@@ -17,6 +17,9 @@ public class MemberList {
 
 
     public void add(MachineInfo mi) {
+        if(mi.getUUID().equals(DistributedMachine.getUUID())) { //don't need to add itself in memberlist
+            return;
+        }
         synchronized (this) {
             if(! this.contains(mi)) {
                 list.add(mi);

@@ -243,4 +243,8 @@ public class DistributedMachine {
     public static AtomicInteger getTimestamp() {
         return timestamp;
     }
+
+    public static UUID getUUID() {
+        return uuid;
+    }
 }
