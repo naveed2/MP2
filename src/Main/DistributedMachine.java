@@ -32,6 +32,7 @@ public class DistributedMachine {
     private static int port;
     private static MachineInfo.MachineState state;
     private static boolean isContactServer;
+    private static Integer dropRates = 0; // from 0 ~ 100
 
     private static Thread syncThread, pingThread;
 
@@ -381,6 +382,26 @@ public class DistributedMachine {
         }
     }
 
+    private static void setDropRates() {
+        System.out.print("Input the drop rates (0 ~ 100): ");
+        String str = in.nextLine();
+        int ret;
+
+        try {
+            ret = Integer.parseInt(str);
+            if(ret >=0 && ret <=100) {
+                dropRates = ret;
+            } else {
+                System.out.println("Invalid number, drop rates set to be 0");
+                dropRates = 0;
+            }
+        } catch (NumberFormatException ex) {
+            logger.info("Number format error");
+            System.out.println("Wrong number, drop rates set to be 0");
+            dropRates = 0;
+        }
+    }
+
     public static void printHelp() {
         CommandMap.printHelp();
     }
@@ -426,6 +447,10 @@ public class DistributedMachine {
 
     public static UUID getUUID() {
         return uuid;
+    }
+
+    public static Integer getDropRates() {
+        return dropRates;
     }
 
     public static MachineInfo.MachineState getState() {

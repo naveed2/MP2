@@ -125,6 +125,9 @@ public class UDPServer {
 
                         DatagramPacket receivePacket = new DatagramPacket(receiveBuffer,BUFFER_SIZE);
                         serverSocket.receive(receivePacket);
+
+                        if(drop()) continue;
+
                         String receiveString = new String(receivePacket.getData());
                         receiveString = trim(receiveString);
 
@@ -208,9 +211,14 @@ public class UDPServer {
         serverThread.stop();
     }
 
-    public static void main(String[] args) {
-        String str = "012663456";
-        System.out.println(str.lastIndexOf("6"));
-        System.out.println(str.substring(0,8));
+
+    private boolean drop() {
+        Integer dropRates = DistributedMachine.getDropRates();
+        Integer random = (int)(Math.random() * 100);
+        if(random<dropRates) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -24,6 +24,9 @@ public class CommandMap {
     private static final String CMD_SHOW_MEMBER_LIST = "show";
     private static final String FUNC_SHOW_MEMBER_LIST = "showMemberList";
 
+    private static final String CMD_SET_DROP_RATES = "set drop rates";
+    private static final String FUNC_SET_DROP_RATES = "setDropRates";
+
     private static final String CMD_HELP = "help";
     private static final String FUNC_HELP = "printHelp";
 
@@ -46,6 +49,7 @@ public class CommandMap {
         stringToFuncName.put(CMD_CONNECT_CONTACT_SERVER, FUNC_CONNECT_CONTACT_SERVER);
         stringToFuncName.put(CMD_LEAVE_GROUP, FUNC_LEAVE_GROUP);
         stringToFuncName.put(CMD_SHOW_MEMBER_LIST, FUNC_SHOW_MEMBER_LIST);
+        stringToFuncName.put(CMD_SET_DROP_RATES, FUNC_SET_DROP_RATES);
         stringToFuncName.put(CMD_HELP, FUNC_HELP);
         stringToFuncName.put(CMD_QUIT, FUNC_QUIT);
 
@@ -60,6 +64,7 @@ public class CommandMap {
         System.out.printf(FORMAT_STRING, CMD_CONNECT_CONTACT_SERVER, "connect the contact server");
         System.out.printf(FORMAT_STRING, CMD_LEAVE_GROUP, "leave group");
         System.out.printf(FORMAT_STRING, CMD_SHOW_MEMBER_LIST, "show the member list");
+        System.out.printf(FORMAT_STRING, CMD_QUIT, "quit");
     }
 
     public synchronized String findCommand(String cmd) {
