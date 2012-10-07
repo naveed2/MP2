@@ -28,6 +28,8 @@ public class UDPServer {
     private static final Integer BUFFER_SIZE = 1024;
     private EventMessageQueue eventMessageQueue;
 
+    private Thread serverThread;
+
     private Logger logger = Logger.getLogger(UDPServer.class);
 
     public UDPServer(int port) {
@@ -65,7 +67,7 @@ public class UDPServer {
 
     private void leaveMachine(EventMessage m) {
         MachineInfo mi = m.getMachineInfo();
-        DistributedMachine.removeMachine(mi);
+        DistributedMachine.leaveMachine(mi);
     }
     
     private void syncMachine(EventMessage m){
@@ -91,7 +93,7 @@ public class UDPServer {
      */
     public void start() throws SocketException {
         serverSocket = new DatagramSocket(port);
-        new Thread(new Runnable() {
+        serverThread = new Thread(new Runnable() {
             public void run() {
 
 
@@ -161,12 +163,18 @@ public class UDPServer {
                     logger.error(ex.toString());
                 }
             }
-        }).start();
+        });
+
+        serverThread.start();
     }
 
     private String trim(String receiveString) {
         String str = receiveString.substring(0, receiveString.lastIndexOf(">")+1);
         return str;
+    }
+
+    public void close() {
+        serverThread.stop();
     }
 
     public static void main(String[] args) {

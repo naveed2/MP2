@@ -33,6 +33,8 @@ public class DistributedMachine {
     private static int port;
     private static MachineInfo.MachineState state;
 
+    private static Thread syncThread, pingThread;
+
     /**
      * Main entry of the program
      *
@@ -146,7 +148,7 @@ public class DistributedMachine {
             try {
                 server.start();
 
-                new Thread(new Runnable() {
+                syncThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -161,7 +163,9 @@ public class DistributedMachine {
                             logger.error(ex.toString());
                         }
                     }
-                }).start();
+                });
+                syncThread.start();
+
                 return;
             } catch (BindException e) {
                 System.out.println("Port is already in use");
@@ -175,7 +179,7 @@ public class DistributedMachine {
 
 
     public static void failureDetect(){
-        new Thread(new Runnable() {
+        pingThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while(true){
@@ -187,7 +191,9 @@ public class DistributedMachine {
                     failureDetect.detect();
                 }
             }
-        }).start();
+        });
+
+        pingThread.start();
 
     }
 
@@ -241,8 +247,12 @@ public class DistributedMachine {
 
     private static void leaveGroup() {
         try {
-            DatagramSocket socket = new DatagramSocket();
+
+            setStateLeaved();
+
             for (MachineInfo mi : getMemberList().getAll()) {
+                DatagramSocket socket = new DatagramSocket();
+                System.err.println("!!!");
                 String[] add = mi.getAddress().split(":");
                 InetAddress address = InetAddress.getByName(add[0]);
                 Message leaveMessage = Message.generateLeaveMessage(uuid, timestamp.incrementAndGet());
@@ -258,6 +268,8 @@ public class DistributedMachine {
                 socket.send(sendPacket);
             }
             getMemberList().clear();
+
+            server.close();
             logger.info("Leave group");
         } catch (Exception e) {
             e.printStackTrace();
@@ -274,6 +286,9 @@ public class DistributedMachine {
         DatagramSocket socket = new DatagramSocket();
 
         for (MachineInfo mi : list.getAll()) {
+            if(mi.getState() != MachineInfo.MachineState.Connected) {
+                continue;
+            }
             InetAddress address = null;
             String str = mi.getAddress();
             String[] add = str.split(":");
@@ -320,6 +335,12 @@ public class DistributedMachine {
     public static void removeMachine(MachineInfo mi) {
         if (memberList.contains(mi)) {
             memberList.remove(mi);
+        }
+    }
+
+    public static void leaveMachine(MachineInfo mi) {
+        if(memberList.contains(mi)) {
+            memberList.updateMachineInfo(mi);
         }
     }
 
@@ -371,5 +392,9 @@ public class DistributedMachine {
 
     public static void setStateConnected() {
         state = MachineInfo.MachineState.Connected;
+    }
+
+    public static void setStateLeaved() {
+        state = MachineInfo.MachineState.Leaved;
     }
 }
