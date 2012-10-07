@@ -1,5 +1,7 @@
 package Server;
 
+import Transmission.FailureDetector;
+
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -9,6 +11,7 @@ public class MachineInfo {
     private UUID uuid;
     private AtomicInteger timestamp;
     private MachineState state;
+    private FailureDetector failureDetector;
 
     public enum MachineState {
         Connected, Failed, Leaved
@@ -18,6 +21,8 @@ public class MachineInfo {
         this.ip = ip;
         this.port = port;
         timestamp = new AtomicInteger(0);
+
+        failureDetector = new FailureDetector(this);
     }
 
     public MachineInfo setUUID(UUID uuid) {
@@ -93,6 +98,18 @@ public class MachineInfo {
             this.state = state;
         }
         return this;
+    }
+
+    public void startFailureDetecting() {
+        failureDetector.startDetect();
+    }
+
+    public void stopFailureDetecting() {
+        failureDetector.stopDetect();
+    }
+
+    public void receivePingAck() {
+        failureDetector.receiveAck();
     }
 
 

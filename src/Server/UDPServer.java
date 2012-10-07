@@ -56,6 +56,8 @@ public class UDPServer {
                     syncMachine(m);
                 } else if (m.getEventType() == EventMessage.EventType.Ping) {
                     pingAckMachine(m);
+                } else if (m.getEventType() == EventMessage.EventType.Ping_ACK) {
+                    receivePingAckFromMachine(m);
                 }
             }
         });
@@ -82,7 +84,22 @@ public class UDPServer {
     }
 
     private void pingAckMachine(EventMessage m) {
+        try{
+            DistributedMachine.pingAck(m.getMachineInfo());
+        } catch(Exception ex) {
+            ex.printStackTrace();
+            logger.info(ex);
+        }
+    }
 
+    private void receivePingAckFromMachine(EventMessage m) {
+        MachineInfo mi = m.getMachineInfo();
+        for(MachineInfo tmp : DistributedMachine.getMemberList().getAll()) {
+            if(tmp.getUUID().equals(mi.getUUID())) {
+                tmp.receivePingAck();
+                return;
+            }
+        }
     }
     
 
@@ -150,6 +167,10 @@ public class UDPServer {
                             em = new EventMessage(EventMessage.EventType.Ping);
                             em.setMachineInfo(machineInfo);
                             logger.info("Received a ping");
+                        } else if(type == 4) { //receive pingack
+                            em = new EventMessage(EventMessage.EventType.Ping_ACK);
+                            em.setMachineInfo(machineInfo);
+                            logger.info("Received a pingack");
                         }
                         
                         else if (type == -1){

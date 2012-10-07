@@ -186,7 +186,7 @@ public class DistributedMachine {
                     } catch (InterruptedException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
-//                    failureDetect.detect();
+
                     try{
                         ping();
                     } catch (Exception ex) {
@@ -312,11 +312,12 @@ public class DistributedMachine {
             socket.send(sendPacket);
         }
 
-        logger.info("Sending ping message");
+        if(list.size() !=0) {
+            logger.info("Sending ping message");
+        }
     }
 
     public static void pingAck(MachineInfo mi) throws IOException, UnknownHostException, TransformerException, ParserConfigurationException {
-        MemberList list = DistributedMachine.getMemberList();
 
         byte[] sendData;
         DatagramSocket socket = new DatagramSocket();
@@ -389,6 +390,7 @@ public class DistributedMachine {
     public static void addMachine(MachineInfo mi) {
         if (!memberList.contains(mi)) {
             memberList.add(mi);
+            mi.startFailureDetecting();
         } else {
             memberList.updateMachineInfo(mi);
         }
@@ -403,6 +405,7 @@ public class DistributedMachine {
     public static void leaveMachine(MachineInfo mi) {
         if(memberList.contains(mi)) {
             memberList.updateMachineInfo(mi);
+            mi.stopFailureDetecting();
         }
     }
 
@@ -411,29 +414,8 @@ public class DistributedMachine {
             memberList.updateMachineInfo(mi);
         } else {
             memberList.add(mi);
+            mi.startFailureDetecting();
         }
-    }
-
-
-    public static void syncMachine(EventMessage m) {
-
-        for (MachineInfo mi : m.getMemberList().getAll()) {
-            if (!memberList.contains(mi)) {
-                memberList.add(mi);
-            } else {
-                memberList.updateMachineInfo(mi);
-            }
-        }
-
-//        for (MachineInfo mi : memberList.getAll()) {
-//            if (!m.getMemberList.getAll().contains(mi)) {
-//                memberList.updateMachineInfo(mi);
-//                
-//        }
-
-
-
-
     }
 
     public static MemberList getMemberList() {
