@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project name = "DistributedMachine" default = "machine.jar" basedir=".">
+    <property name="build.home" value="build/" />
+    <property name="deploy.home" value="deploy/" />
+    <property name="src" value="${basedir}/src/" />
+
+    <path id="compiled.classpath">
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="clean">
+        <delete dir="${build.home}" quiet="false"/>
+        <delete dir="${deploy.home}" quiet="false"/>
+    </target>
+
+    <target name="machine.init">
+        <mkdir dir="${build.home}" />
+        <mkdir dir="${build.home}/classes/" />
+        <mkdir dir="${deploy.home}" />
+        <mkdir dir="${deploy.home}/lib" />
+    </target>
+
+    <target name="machine.compile" depends="machine.init">
+        <javac srcdir="${src}" destdir="${build.home}/classes/" includeantruntime="false">
+            <classpath refid="compiled.classpath" />
+        </javac>
+    </target>
+
+
+    <target name="machine.jar" depends="machine.compile">
+        <copy todir="${deploy.home}">
+            <fileset dir="${basedir}">
+                <include name="log4j.properties" />
+                <include name="machine.sh" />
+            </fileset>
+        </copy>
+
+        <copy todir="${deploy.home}/lib">
+            <fileset dir="${basedir}/lib">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+
+        <jar destfile="${deploy.home}/machine.jar" basedir="${build.home}/classes">
+            <manifest>
+                <attribute name="Main-Class" value="Main.DistributedMachine" />
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="build" depends="machine.jar"/>
+
+</project>
+
