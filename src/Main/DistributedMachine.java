@@ -5,7 +5,6 @@ import Server.MachineInfo;
 import Server.UDPServer;
 import Transmission.EventMessage;
 import Transmission.MessageReceivedListener;
-import Transmission.failureDetect;
 import Util.UtilityTool;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -155,7 +154,7 @@ public class DistributedMachine {
                             while(true) {
                                 Thread.sleep(SYNC_PERIOD);
                                 if(memberList.size()!=0) {
-                                    Sync();
+                                    sync();
                                 }
                             }
                         } catch(Exception ex) {
@@ -281,12 +280,9 @@ public class DistributedMachine {
         }
     }
 
-    public static void Sync() throws ParserConfigurationException, TransformerException, UnknownHostException, IOException {
+    public static void sync() throws ParserConfigurationException, TransformerException, UnknownHostException, IOException {
 
         MemberList list = DistributedMachine.getMemberList();
-
-
-
 
         for (MachineInfo mi : list.getAll()) {
             byte[] sendData;
