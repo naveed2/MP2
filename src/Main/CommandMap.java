@@ -64,6 +64,7 @@ public class CommandMap {
         System.out.printf(FORMAT_STRING, CMD_CONNECT_CONTACT_SERVER, "connect the contact server");
         System.out.printf(FORMAT_STRING, CMD_LEAVE_GROUP, "leave group");
         System.out.printf(FORMAT_STRING, CMD_SHOW_MEMBER_LIST, "show the member list");
+        System.out.printf(FORMAT_STRING, CMD_SET_DROP_RATES, "set drop rates");
         System.out.printf(FORMAT_STRING, CMD_QUIT, "quit");
     }
 
