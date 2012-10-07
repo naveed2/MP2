@@ -4,6 +4,7 @@ import Transmission.Message;
 import Server.MachineInfo;
 import Server.UDPServer;
 import Transmission.EventMessage;
+import Transmission.MessageReceivedListener;
 import Util.UtilityTool;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -57,6 +58,13 @@ public class DistributedMachine {
 
         printWelcomeMessage();
         startUDPServer();
+
+        server.getEventMessageQueue().addMessageReceivedListener(new MessageReceivedListener() {
+            @Override
+            public void onReceivingMessage(EventMessage m) throws ParserConfigurationException, TransformerException, UnknownHostException, IOException {
+                logger.info("Receive EventMessage: " + m.getEventType());
+            }
+        });
     }
 
     private static void log4jConfigure() {
@@ -122,6 +130,7 @@ public class DistributedMachine {
     private static void printWelcomeMessage() {
         System.out.println("Welcome to the fictitious Group-R-Us Inc.!");
         System.out.println("Author: Muhammad Naveed, Junjie Hu");
+        System.out.println("UUID: " + uuid.toString());
     }
 
     /**
@@ -250,7 +259,7 @@ public class DistributedMachine {
         }
 
         for (MachineInfo mi : memberList.getAll()) {
-            System.out.println(mi.getAddress() + "\t" + mi.getState().toString() + "\t" + mi.getTimestamp());
+            System.out.println(mi.getAddress() + "\t" + mi.getState().toString() + "\t" + mi.getTimestamp() + "\t" + mi.getUUID());
         }
     }
 
@@ -271,6 +280,15 @@ public class DistributedMachine {
             memberList.remove(mi);
         }
     }
+
+    public static void syncMachine(MachineInfo mi) {
+        if(memberList.contains(mi)) {
+            memberList.updateMachineInfo(mi);
+        } else {
+            memberList.add(mi);
+        }
+    }
+
 
     public static void syncMachine(EventMessage m) {
 

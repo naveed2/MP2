@@ -70,7 +70,11 @@ public class UDPServer {
     
     private void syncMachine(EventMessage m){
         MemberList list = m.getMemberList();
-        DistributedMachine.syncMachine(m);
+        list.add(m.getMachineInfo());
+        for(MachineInfo mi : list.getAll()) {
+            DistributedMachine.syncMachine(mi);
+        }
+//        DistributedMachine.syncMachine(m);
         
         
     }
@@ -102,7 +106,7 @@ public class UDPServer {
                         int timestamp = Message.getTimestampFromMessageString(receiveString);
                         int type = Message.getTypeFromMessageString(receiveString);
                         int port = Message.getPortFromMessageString(receiveString);
-                        
+                        MachineInfo.MachineState state = Message.getStateFromMessageString(receiveString);
                         
 
                         SocketAddress sa = receivePacket.getSocketAddress();
@@ -112,10 +116,10 @@ public class UDPServer {
                         }
 
                         MachineInfo machineInfo = new MachineInfo(address[0], port);
-                        machineInfo.setUUID(uuid).setTimestamp(timestamp);
+                        machineInfo.setUUID(uuid).setTimestamp(timestamp).setState(state);
 
                         EventMessage em = null;
-                        System.out.println("type = " + type);
+                        
                         if(type == 0 ) {    // join message
                             machineInfo.setStateConnected();
                             em = new EventMessage(EventMessage.EventType.Join);

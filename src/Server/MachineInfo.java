@@ -88,8 +88,19 @@ public class MachineInfo {
         return this;
     }
 
+    public MachineInfo setState(MachineState state) {
+        synchronized (this) {
+            this.state = state;
+        }
+        return this;
+    }
+
 
     public MachineState getState() {
         return state;
+    }
+
+    public static void main(String args[]) {
+        System.out.println(MachineInfo.MachineState.valueOf("Connected").toString());
     }
 }

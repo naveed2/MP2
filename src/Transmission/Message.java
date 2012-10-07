@@ -85,6 +85,7 @@ public class Message {
         msg._IP = InetAddress.getByName(mi.getIP());
         msg._id = mi.getUUID();
         msg._time_stamp = mi.getTimestamp();
+        msg.serverPort = mi.getPort();
         return msg;
 
     }
@@ -204,6 +205,27 @@ public class Message {
         return null;
     }
 
+    public static MachineInfo.MachineState getStateFromMessageString(String xmlStr) {
+        try {
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+            Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr.trim())));
+
+            String state = doc.getElementsByTagName("state").item(0).getFirstChild().getNodeValue();
+
+            return MachineInfo.MachineState.valueOf(state);
+
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+            logger.error(e.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.toString());
+        }
+        return null;
+    }
+
     static public MemberList getMemberListfromMessageString(String xmlStr) throws ParserConfigurationException, SAXException, IOException {
         MemberList list = new MemberList();
 
@@ -222,10 +244,10 @@ public class Message {
                 int port = Integer.parseInt(eElement.getElementsByTagName("port").item(0).getChildNodes().item(0).getNodeValue());
                 UUID id = UUID.fromString(eElement.getElementsByTagName("id").item(0).getChildNodes().item(0).getNodeValue());
                 int timestamp = Integer.parseInt(eElement.getElementsByTagName("timestamp").item(0).getChildNodes().item(0).getNodeValue());
+                String state = doc.getElementsByTagName("state").item(0).getFirstChild().getNodeValue();
 
                 MachineInfo temp = new MachineInfo(IP, port);
-                temp.setUUID(id);
-                temp.setTimestamp(timestamp);
+                temp.setUUID(id).setTimestamp(timestamp).setState(MachineInfo.MachineState.valueOf(state));
                 list.add(temp);
             }
         }
@@ -354,7 +376,7 @@ public class Message {
             machine.appendChild(port_member);
 
             Element id_member = doc.createElement("id");
-            id_member.appendChild(doc.createTextNode(_id.toString()));
+            id_member.appendChild(doc.createTextNode(msg._id.toString()));
             machine.appendChild(id_member);
 
             Element time_stamp_member = doc.createElement("timestamp");
