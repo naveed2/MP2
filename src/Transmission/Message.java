@@ -125,7 +125,7 @@ public class Message {
     public static int getTypeFromMessageString(String xmlStr) {
         try {
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr.trim())));
+            Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr)));
 
             String type = doc.getElementsByTagName("messagetype").item(0).getFirstChild().getNodeValue();
 
@@ -146,7 +146,7 @@ public class Message {
         try {
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
-            Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr.trim())));
+            Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr)));
 
             String uuid = doc.getElementsByTagName("id").item(0).getFirstChild().getNodeValue();
 
@@ -167,7 +167,7 @@ public class Message {
         try {
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
-            Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr.trim())));
+            Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr)));
 
             String timestamp = doc.getElementsByTagName("timestamp").item(0).getFirstChild().getNodeValue();
 
@@ -188,7 +188,7 @@ public class Message {
         try {
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
-            Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr.trim())));
+            Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr)));
 
             String port = doc.getElementsByTagName("port").item(0).getFirstChild().getNodeValue();
 
@@ -209,7 +209,7 @@ public class Message {
         try {
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
-            Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr.trim())));
+            Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr)));
 
             String state = doc.getElementsByTagName("state").item(0).getFirstChild().getNodeValue();
 
@@ -231,7 +231,7 @@ public class Message {
 
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
-        Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr.trim())));
+        Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr)));
         NodeList machine = doc.getElementsByTagName("machine");
 
         for (int i = 0; i < machine.getLength(); i++) {
@@ -307,11 +307,6 @@ public class Message {
 
         transformer.transform(source, result);
         transformer.transform(source, result1);
-
-        //TODO:why we need to save a file?
-        System.out.println("File saved!");
-
-
 
     }
 
@@ -400,11 +395,6 @@ public class Message {
 
         transformer.transform(source, result);
         transformer.transform(source, result1);
-
-        //TODO:why we need to save a file?
-        System.out.println("File saved!");
-
-
 
     }
 
