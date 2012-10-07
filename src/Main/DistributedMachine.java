@@ -5,6 +5,7 @@ import Server.MachineInfo;
 import Server.UDPServer;
 import Transmission.EventMessage;
 import Transmission.MessageReceivedListener;
+import Transmission.failureDetect;
 import Util.UtilityTool;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -172,6 +173,24 @@ public class DistributedMachine {
         }
     }
 
+
+    public static void failureDetect(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true){
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+                    failureDetect.detect();
+                }
+            }
+        }).start();
+
+    }
+
     private static void startContactServer() {
         int port = inputPortNumber();
         server = new UDPServer(port);
@@ -208,8 +227,11 @@ public class DistributedMachine {
             bos.close();
             sendData = bos.toByteArray();
 
+            System.out.println(new String(sendData));
+
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, Integer.parseInt(add[1]));
             socket.send(sendPacket);
+
 
             logger.info("join group, contact server: " + str);
         } catch (Exception e) {
