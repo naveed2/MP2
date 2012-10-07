@@ -212,6 +212,7 @@ public class DistributedMachine {
 
     private static void startContactServer() {
         isContactServer = true;
+        setStateConnected();
     }
 
     private static void connectContactServer() {
@@ -407,6 +408,10 @@ public class DistributedMachine {
     }
 
     public static void addMachine(MachineInfo mi) {
+        if(DistributedMachine.getState() == MachineInfo.MachineState.Leaved) {
+                    return;
+        }
+
         if (!memberList.contains(mi)) {
             memberList.add(mi);
             mi.startFailureDetecting();
@@ -422,6 +427,9 @@ public class DistributedMachine {
     }
 
     public static void leaveMachine(MachineInfo mi) {
+        if(DistributedMachine.getState() == MachineInfo.MachineState.Leaved) {
+            return;
+        }
         if(memberList.contains(mi)) {
             memberList.updateMachineInfo(mi);
             memberList.get(mi).stopFailureDetecting();
