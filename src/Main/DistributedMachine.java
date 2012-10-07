@@ -229,7 +229,6 @@ public class DistributedMachine {
         setStateConnected();
 
         try {
-            DatagramSocket socket = new DatagramSocket();
             address = InetAddress.getByName(add[0]);
 
             Message joinMessage = Message.generateJoinMessage(address, uuid, timestamp.incrementAndGet());
@@ -242,9 +241,7 @@ public class DistributedMachine {
 
             System.out.println(new String(sendData));
 
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, Integer.parseInt(add[1]));
-            socket.send(sendPacket);
-
+            sendUDPPacket(sendData, address, Integer.parseInt(add[1]));
 
             logger.info("join group, contact server: " + str);
         } catch (Exception e) {
@@ -258,7 +255,6 @@ public class DistributedMachine {
             setStateLeaved();
 
             for (MachineInfo mi : getMemberList().getAll()) {
-                DatagramSocket socket = new DatagramSocket();
                 String[] add = mi.getAddress().split(":");
                 InetAddress address = InetAddress.getByName(add[0]);
                 Message leaveMessage = Message.generateLeaveMessage(uuid, timestamp.incrementAndGet());
@@ -268,8 +264,7 @@ public class DistributedMachine {
                 bos.close();
                 byte[] sendData;
                 sendData = bos.toByteArray();
-                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, Integer.parseInt(add[1]));
-                socket.send(sendPacket);
+                sendUDPPacket(sendData, address, Integer.parseInt(add[1]));
             }
             getMemberList().clear();
 
@@ -289,7 +284,6 @@ public class DistributedMachine {
 
         for(MachineInfo mi: list.getAll()) {
             byte[] sendData;
-            DatagramSocket socket = new DatagramSocket();
 
             if(mi.getState() != MachineInfo.MachineState.Connected) {
                 continue;
@@ -308,8 +302,7 @@ public class DistributedMachine {
             bos.close();
             sendData = bos.toByteArray();
 
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, Integer.parseInt(add[1]));
-            socket.send(sendPacket);
+            sendUDPPacket(sendData, address, Integer.parseInt(add[1]));
         }
 
         if(list.size() !=0) {
@@ -320,7 +313,6 @@ public class DistributedMachine {
     public static void pingAck(MachineInfo mi) throws IOException, UnknownHostException, TransformerException, ParserConfigurationException {
 
         byte[] sendData;
-        DatagramSocket socket = new DatagramSocket();
 
         InetAddress address = null;
         String str = mi.getAddress();
@@ -335,10 +327,17 @@ public class DistributedMachine {
         bos.close();
         sendData  = bos.toByteArray();
 
-        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, Integer.parseInt(add[1]));
-        socket.send(sendPacket);
+        sendUDPPacket(sendData, address, Integer.parseInt(add[1]));
 
         logger.info("Sending pingAck message");
+    }
+
+    public static void sendUDPPacket(byte[] sendData, InetAddress address, Integer port) throws IOException {
+        DatagramSocket socket= new DatagramSocket();
+        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, port);
+        socket.send(sendPacket);
+        socket.close();
+        logger.info("Sends updpacket, size: " + sendData.length + " bytes");
     }
 
     public static void sync() throws ParserConfigurationException, TransformerException, UnknownHostException, IOException {
@@ -347,7 +346,6 @@ public class DistributedMachine {
 
         for (MachineInfo mi : list.getAll()) {
             byte[] sendData;
-            DatagramSocket socket = new DatagramSocket();
 
             if(mi.getState() != MachineInfo.MachineState.Connected) {
                 continue;
@@ -365,8 +363,7 @@ public class DistributedMachine {
             bos.close();
             sendData = bos.toByteArray();
 
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, Integer.parseInt(add[1]));
-            socket.send(sendPacket);
+            sendUDPPacket(sendData, address, Integer.parseInt(add[1]));
         }
 
         logger.info("Sending sync message");
