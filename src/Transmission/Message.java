@@ -79,6 +79,27 @@ public class Message {
         return msg;
     }
 
+    public static Message generatePingMessage(int time_stamp_join){
+        Message msg = new Message();
+        msg._messageType = 3;
+        msg._IP = null;
+        msg._id = null;
+
+        msg._time_stamp = time_stamp_join;
+        return msg;
+
+    }
+
+    public static Message generatePingAckMessage(int time_stamp_join){
+        Message msg = new Message();
+        msg._messageType = 4;
+        msg._IP = null;
+        msg._id = null;
+        msg._time_stamp = time_stamp_join;
+        return msg;
+
+    }
+
     public static Message generateSyncEntry(MachineInfo mi) throws UnknownHostException {
 
         Message msg = new Message();

@@ -189,7 +189,7 @@ public class DistributedMachine {
                     } catch (InterruptedException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
-                    failureDetect.detect();
+//                    failureDetect.detect();
                 }
             }
         });
@@ -286,10 +286,12 @@ public class DistributedMachine {
         MemberList list = DistributedMachine.getMemberList();
 
 
-        byte[] sendData;
-        DatagramSocket socket = new DatagramSocket();
+
 
         for (MachineInfo mi : list.getAll()) {
+            byte[] sendData;
+            DatagramSocket socket = new DatagramSocket();
+
             if(mi.getState() != MachineInfo.MachineState.Connected) {
                 continue;
             }

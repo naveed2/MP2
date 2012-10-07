@@ -36,11 +36,10 @@ public class failureDetect {
     public static boolean ping(String IP) {
         // 4 seconds because it will take sometime to go through the code, will
         // think about this later
-        try {
-            return InetAddress.getByName(IP).isReachable(4000); //put characterset for platform indepdenence
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+            Message msg = new Message();
+            msg._messageType = 3;
+
+
 
         return false;
     }
