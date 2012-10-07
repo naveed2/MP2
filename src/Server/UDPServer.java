@@ -101,12 +101,13 @@ public class UDPServer {
                         DatagramPacket receivePacket = new DatagramPacket(receiveBuffer,BUFFER_SIZE);
                         serverSocket.receive(receivePacket);
                         String receiveString = new String(receivePacket.getData());
-                        receiveString = trim(receiveString);
                         UUID uuid = Message.getUUIDFromMessageString(receiveString);
                         int timestamp = Message.getTimestampFromMessageString(receiveString);
                         int type = Message.getTypeFromMessageString(receiveString);
                         int port = Message.getPortFromMessageString(receiveString);
                         MachineInfo.MachineState state = Message.getStateFromMessageString(receiveString);
+
+                        receiveString = trim(receiveString);
                         
 
                         SocketAddress sa = receivePacket.getSocketAddress();

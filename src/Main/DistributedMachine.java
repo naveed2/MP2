@@ -151,7 +151,9 @@ public class DistributedMachine {
                         try {
                             while(true) {
                                 Thread.sleep(SYNC_PERIOD);
-                                Sync();
+                                if(memberList.size()!=0) {
+                                    Sync();
+                                }
                             }
                         } catch(Exception ex) {
                             ex.printStackTrace();
@@ -263,10 +265,9 @@ public class DistributedMachine {
 
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, Integer.parseInt(add[1]));
             socket.send(sendPacket);
-
-            logger.info("join group, contact server: " + str);
-
         }
+
+        logger.info("Sending sync message");
     }
 
     private static void showMemberList() {
