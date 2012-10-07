@@ -251,7 +251,7 @@ public class Message {
                 int port = Integer.parseInt(eElement.getElementsByTagName("port").item(0).getChildNodes().item(0).getNodeValue());
                 UUID id = UUID.fromString(eElement.getElementsByTagName("id").item(0).getChildNodes().item(0).getNodeValue());
                 int timestamp = Integer.parseInt(eElement.getElementsByTagName("timestamp").item(0).getChildNodes().item(0).getNodeValue());
-                String state = doc.getElementsByTagName("state").item(0).getFirstChild().getNodeValue();
+                String state = eElement.getElementsByTagName("state").item(0).getFirstChild().getNodeValue();
 
                 MachineInfo temp = new MachineInfo(IP, port);
                 temp.setUUID(id).setTimestamp(timestamp).setState(MachineInfo.MachineState.valueOf(state));

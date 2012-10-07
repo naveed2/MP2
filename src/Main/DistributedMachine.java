@@ -165,6 +165,7 @@ public class DistributedMachine {
                     }
                 });
                 syncThread.start();
+                failureDetect();
 
                 return;
             } catch (BindException e) {
@@ -269,7 +270,10 @@ public class DistributedMachine {
             }
             getMemberList().clear();
 
+            syncThread.stop();
+            pingThread.stop();
             server.close();
+
             logger.info("Leave group");
         } catch (Exception e) {
             e.printStackTrace();
