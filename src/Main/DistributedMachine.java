@@ -62,7 +62,6 @@ public class DistributedMachine {
         startUDPServer();
 
         server.getEventMessageQueue().addMessageReceivedListener(new MessageReceivedListener() {
-            @Override
             public void onReceivingMessage(EventMessage m) throws ParserConfigurationException, TransformerException, UnknownHostException, IOException {
                 logger.info("Receive EventMessage: " + m.getEventType());
             }
@@ -148,7 +147,6 @@ public class DistributedMachine {
                 server.start();
 
                 syncThread = new Thread(new Runnable() {
-                    @Override
                     public void run() {
                         try {
                             while(true) {
@@ -180,7 +178,7 @@ public class DistributedMachine {
 
     public static void failureDetect(){
         pingThread = new Thread(new Runnable() {
-            @Override
+
             public void run() {
                 while(true){
                     try {
