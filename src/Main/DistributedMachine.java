@@ -315,8 +315,29 @@ public class DistributedMachine {
         logger.info("Sending ping message");
     }
 
-    public static void pingAck() {
+    public static void pingAck(MachineInfo mi) throws IOException, UnknownHostException, TransformerException, ParserConfigurationException {
+        MemberList list = DistributedMachine.getMemberList();
 
+        byte[] sendData;
+        DatagramSocket socket = new DatagramSocket();
+
+        InetAddress address = null;
+        String str = mi.getAddress();
+        String[] add = str.split(":");
+        address = InetAddress.getByName(add[0]);
+
+        Message pingAckMessage = Message.generatePingAckMessage(address, uuid, timestamp.incrementAndGet());
+        pingAckMessage.setServerPort(port);
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        pingAckMessage.toxmlString(bos, mi.getState());
+        bos.close();
+        sendData  = bos.toByteArray();
+
+        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, Integer.parseInt(add[1]));
+        socket.send(sendPacket);
+
+        logger.info("Sending pingAck message");
     }
 
     public static void sync() throws ParserConfigurationException, TransformerException, UnknownHostException, IOException {
