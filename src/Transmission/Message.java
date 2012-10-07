@@ -32,7 +32,7 @@ public class Message {
     private int _time_stamp;
     private int serverPort;
     private static Logger logger = Logger.getLogger(Message.class);
-    private static DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+
 
     public Message() {
     }
@@ -92,6 +92,7 @@ public class Message {
 
     public static Message generateMessageFromString(String xmlStr) throws ParserConfigurationException, TransformerException {
 
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
         try {
@@ -124,6 +125,7 @@ public class Message {
 
     public static int getTypeFromMessageString(String xmlStr) {
         try {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr)));
 
@@ -144,6 +146,7 @@ public class Message {
 
     public static UUID getUUIDFromMessageString(String xmlStr) {
         try {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
             Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr)));
@@ -165,6 +168,7 @@ public class Message {
 
     public static Integer getTimestampFromMessageString(String xmlStr) {
         try {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
             Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr)));
@@ -186,6 +190,7 @@ public class Message {
 
     public static Integer getPortFromMessageString(String xmlStr) {
         try {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
             Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr)));
@@ -207,6 +212,7 @@ public class Message {
 
     public static MachineInfo.MachineState getStateFromMessageString(String xmlStr) {
         try {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
             Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr)));
@@ -229,6 +235,7 @@ public class Message {
     static public MemberList getMemberListfromMessageString(String xmlStr) throws ParserConfigurationException, SAXException, IOException {
         MemberList list = new MemberList();
 
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
         Document doc = docBuilder.parse(new InputSource(new StringReader(xmlStr)));
@@ -257,6 +264,8 @@ public class Message {
 
     public void toxmlString(OutputStream os, MachineInfo.MachineState state) throws ParserConfigurationException, TransformerException {
         //return Integer.toString(messageType) + IP.toString() + Integer.toString()
+
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -301,11 +310,11 @@ public class Message {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult(new File("message.xml"));
+//        StreamResult result = new StreamResult(new File("message.xml"));
 
         StreamResult result1 = new StreamResult(os);
 
-        transformer.transform(source, result);
+//        transformer.transform(source, result);
         transformer.transform(source, result1);
 
     }
@@ -313,6 +322,7 @@ public class Message {
     public void toxmlString(OutputStream os, MachineInfo.MachineState state, MemberList list) throws ParserConfigurationException, TransformerException, UnknownHostException {
         //return Integer.toString(messageType) + IP.toString() + Integer.toString()
 
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
         Document doc = docBuilder.newDocument();
@@ -389,11 +399,11 @@ public class Message {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult(new File("message.xml"));
+//        StreamResult result = new StreamResult(new File("message.xml"));
 
         StreamResult result1 = new StreamResult(os);
 
-        transformer.transform(source, result);
+//        transformer.transform(source, result);
         transformer.transform(source, result1);
 
     }

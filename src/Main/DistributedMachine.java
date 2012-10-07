@@ -194,6 +194,8 @@ public class DistributedMachine {
         String[] add = str.split(":");
         byte[] sendData;
 
+        setStateConnected();
+
         try {
             DatagramSocket socket = new DatagramSocket();
             address = InetAddress.getByName(add[0]);
@@ -343,5 +345,9 @@ public class DistributedMachine {
 
     public static MachineInfo.MachineState getState() {
         return state;
+    }
+
+    public static void setStateConnected() {
+        state = MachineInfo.MachineState.Connected;
     }
 }

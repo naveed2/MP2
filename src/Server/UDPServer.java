@@ -94,20 +94,25 @@ public class UDPServer {
         new Thread(new Runnable() {
             public void run() {
 
-                byte[] receiveBuffer = new byte[BUFFER_SIZE];
+
 
                 try{
                     while(true) {
+                        byte[] receiveBuffer = new byte[BUFFER_SIZE];
+
                         DatagramPacket receivePacket = new DatagramPacket(receiveBuffer,BUFFER_SIZE);
                         serverSocket.receive(receivePacket);
                         String receiveString = new String(receivePacket.getData());
+                        receiveString = trim(receiveString);
+
+
                         UUID uuid = Message.getUUIDFromMessageString(receiveString);
                         int timestamp = Message.getTimestampFromMessageString(receiveString);
                         int type = Message.getTypeFromMessageString(receiveString);
                         int port = Message.getPortFromMessageString(receiveString);
                         MachineInfo.MachineState state = Message.getStateFromMessageString(receiveString);
 
-                        receiveString = trim(receiveString);
+
                         
 
                         SocketAddress sa = receivePacket.getSocketAddress();
@@ -160,13 +165,13 @@ public class UDPServer {
     }
 
     private String trim(String receiveString) {
-        String ret = null;
-        for(int i=receiveString.length()-1;i>0; --i) {
-            if(receiveString.charAt(i) == '>') {
-                ret = receiveString.substring(0, i+1);
-                return ret;
-            }
-        }
-        return ret;
+        String str = receiveString.substring(0, receiveString.lastIndexOf(">")+1);
+        return str;
+    }
+
+    public static void main(String[] args) {
+        String str = "012663456";
+        System.out.println(str.lastIndexOf("6"));
+        System.out.println(str.substring(0,8));
     }
 }
