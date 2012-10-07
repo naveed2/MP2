@@ -189,6 +189,12 @@ public class DistributedMachine {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
 //                    failureDetect.detect();
+                    try{
+                        ping();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        logger.info(ex.toString());
+                    }
                 }
             }
         });
@@ -278,6 +284,41 @@ public class DistributedMachine {
             e.printStackTrace();
             logger.error(e.toString());
         }
+    }
+
+    public static void ping() throws IOException, UnknownHostException, TransformerException, ParserConfigurationException {
+        MemberList list = DistributedMachine.getMemberList();
+
+        for(MachineInfo mi: list.getAll()) {
+            byte[] sendData;
+            DatagramSocket socket = new DatagramSocket();
+
+            if(mi.getState() != MachineInfo.MachineState.Connected) {
+                continue;
+            }
+
+            InetAddress address = null;
+            String str = mi .getAddress();
+            String[] add = str.split(":");
+            address = InetAddress.getByName(add[0]);
+
+            Message pingMessage = Message.generatePingMessage(address, uuid, timestamp.incrementAndGet());
+            pingMessage.setServerPort(port);
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            pingMessage.toxmlString(bos, mi.getState());
+            bos.close();
+            sendData = bos.toByteArray();
+
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, Integer.parseInt(add[1]));
+            socket.send(sendPacket);
+        }
+
+        logger.info("Sending ping message");
+    }
+
+    public static void pingAck() {
+
     }
 
     public static void sync() throws ParserConfigurationException, TransformerException, UnknownHostException, IOException {
