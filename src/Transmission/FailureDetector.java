@@ -3,10 +3,13 @@ package Transmission;
 import Main.DistributedMachine;
 import Main.MemberList;
 import Server.MachineInfo;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.sql.Time;
+import java.util.Date;
 
 /**
  * Used in failure detecting.
@@ -16,12 +19,11 @@ public class FailureDetector {
     final private MachineInfo mi;
     private Thread thread;
     private boolean stop;
+    private static Logger logger = Logger.getLogger(FailureDetector.class);
 
-    private static final Integer WAIT_TIME = 5000; //ms
+    private static final Integer WAIT_TIME = 4000; //ms
 
-    private int testi = 0;
-
-    public FailureDetector(MachineInfo mi) {
+    public FailureDetector(final MachineInfo mi) {
         this.mi = mi;
         stop = false;
 
@@ -37,7 +39,11 @@ public class FailureDetector {
                 }
 
                 if(!stop) {
+                    Date date = new Date();
                     FailureDetector.this.mi.setStateFailed();
+                    String str = date.toString() +  ": Detect fail machine " + mi.getAddress() + " " + mi.getUUID();
+                    logger.error(str);
+                    System.out.println(str);
                 }
             }
         });

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.*;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -79,6 +80,9 @@ public class DistributedMachine {
 
         while (true) {
             String cmd = inputCommand();
+            if(cmd.length() == 0) {
+                continue;
+            }
             String funcName;
 
             funcName = commandMap.findCommand(cmd);
@@ -410,6 +414,11 @@ public class DistributedMachine {
         }
 
         if (!memberList.contains(mi)) {
+            Date date = new Date();
+            String str = date.toString() +  ": join machine " + mi.getAddress() + " " + mi.getUUID();
+            logger.info(str);
+            System.out.println(str);
+
             memberList.add(mi);
             mi.startFailureDetecting();
         } else {
