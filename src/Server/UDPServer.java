@@ -150,9 +150,11 @@ public class UDPServer {
                         EventMessage em = null;
                         
                         if(type == 0 ) {    // join message
-                            machineInfo.setStateConnected();
-                            em = new EventMessage(EventMessage.EventType.Join);
-                            em.setMachineInfo(machineInfo);
+                            if(DistributedMachine.isContactServer()) {
+                                machineInfo.setStateConnected();
+                                em = new EventMessage(EventMessage.EventType.Join);
+                                em.setMachineInfo(machineInfo);
+                            }
                             logger.info("Received a join message");
                         } else if(type == 1) { //leave message
                             em = new EventMessage(EventMessage.EventType.Leave);

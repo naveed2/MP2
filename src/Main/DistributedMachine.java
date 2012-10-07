@@ -31,6 +31,7 @@ public class DistributedMachine {
     private static AtomicInteger timestamp;
     private static int port;
     private static MachineInfo.MachineState state;
+    private static boolean isContactServer;
 
     private static Thread syncThread, pingThread;
 
@@ -57,6 +58,7 @@ public class DistributedMachine {
         uuid = UUID.randomUUID();
         timestamp = new AtomicInteger(0);
         state = MachineInfo.MachineState.Leaved;
+        isContactServer = false;
 
         printWelcomeMessage();
         startUDPServer();
@@ -208,14 +210,7 @@ public class DistributedMachine {
     }
 
     private static void startContactServer() {
-        int port = inputPortNumber();
-        server = new UDPServer(port);
-        try {
-            server.start();
-        } catch (SocketException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-        }
+        isContactServer = true;
     }
 
     private static void connectContactServer() {
@@ -443,5 +438,9 @@ public class DistributedMachine {
 
     public static void setStateLeaved() {
         state = MachineInfo.MachineState.Leaved;
+    }
+
+    public static boolean isContactServer() {
+        return isContactServer;
     }
 }
