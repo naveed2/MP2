@@ -101,7 +101,7 @@ public class UDPServer {
                         DatagramPacket receivePacket = new DatagramPacket(receiveBuffer,BUFFER_SIZE);
                         serverSocket.receive(receivePacket);
                         String receiveString = new String(receivePacket.getData());
-
+                        receiveString = trim(receiveString);
                         UUID uuid = Message.getUUIDFromMessageString(receiveString);
                         int timestamp = Message.getTimestampFromMessageString(receiveString);
                         int type = Message.getTypeFromMessageString(receiveString);
@@ -156,5 +156,16 @@ public class UDPServer {
                 }
             }
         }).start();
+    }
+
+    private String trim(String receiveString) {
+        String ret = null;
+        for(int i=receiveString.length()-1;i>0; --i) {
+            if(receiveString.charAt(i) == '>') {
+                ret = receiveString.substring(0, i+1);
+                return ret;
+            }
+        }
+        return ret;
     }
 }

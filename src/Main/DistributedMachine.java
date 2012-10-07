@@ -133,6 +133,8 @@ public class DistributedMachine {
         System.out.println("UUID: " + uuid.toString());
     }
 
+    private static final Integer SYNC_PERIOD = 3000;
+
     /**
      * Start a UDP server that receives packets from other machines.
      */
@@ -142,6 +144,21 @@ public class DistributedMachine {
             server = new UDPServer(port);
             try {
                 server.start();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            while(true) {
+                                Thread.sleep(SYNC_PERIOD);
+                                Sync();
+                            }
+                        } catch(Exception ex) {
+                            ex.printStackTrace();
+                            logger.error(ex.toString());
+                        }
+                    }
+                }).start();
                 return;
             } catch (BindException e) {
                 System.out.println("Port is already in use");
