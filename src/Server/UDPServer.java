@@ -25,7 +25,7 @@ public class UDPServer {
 
     private DatagramSocket serverSocket;
     private int port;
-    private static final Integer BUFFER_SIZE = 1024;
+    private static final Integer BUFFER_SIZE = 8192; //8k bytes
     private EventMessageQueue eventMessageQueue;
 
     private Thread serverThread;
