@@ -21,8 +21,6 @@ public class MachineInfo {
         this.ip = ip;
         this.port = port;
         timestamp = new AtomicInteger(0);
-
-        failureDetector = new FailureDetector(this);
     }
 
     public MachineInfo setUUID(UUID uuid) {
@@ -101,6 +99,9 @@ public class MachineInfo {
     }
 
     public void startFailureDetecting() {
+        if(failureDetector == null) {
+            failureDetector = new FailureDetector(this);
+        }
         failureDetector.startDetect();
     }
 

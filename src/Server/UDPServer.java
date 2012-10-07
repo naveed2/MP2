@@ -188,8 +188,7 @@ public class UDPServer {
 //                        System.out.print(">");
                     }
                 } catch(Exception ex) {
-                    ex.printStackTrace();
-                    logger.error(ex.toString());
+                    logger.info(ex.toString());
                 }
             }
         });
@@ -203,6 +202,7 @@ public class UDPServer {
     }
 
     public void close() {
+        serverSocket.close();
         serverThread.stop();
     }
 

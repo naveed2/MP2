@@ -19,6 +19,8 @@ public class FailureDetector {
 
     private static final Integer WAIT_TIME = 5000; //ms
 
+    private int testi = 0;
+
     public FailureDetector(MachineInfo mi) {
         this.mi = mi;
         stop = false;
@@ -30,25 +32,29 @@ public class FailureDetector {
                         Thread.sleep(WAIT_TIME);
                         break;
                     } catch (InterruptedException e) {
-                        if(stop) {
-                            return;
-                        }
+                        //do nothing
                     }
                 }
 
-                FailureDetector.this.mi.setStateFailed();
+                if(!stop) {
+                    FailureDetector.this.mi.setStateFailed();
+                }
             }
         });
     }
 
     public void startDetect(){
-        stop = false;
-        thread.start();
+        synchronized (this) {
+            stop = false;
+            thread.start();
+        }
     }
 
     public void stopDetect() {
-        stop = true;
-        thread.interrupt();
+        synchronized (this) {
+            stop = true;
+            thread.interrupt();
+        }
     }
 
     public void receiveAck() {

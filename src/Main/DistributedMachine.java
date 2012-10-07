@@ -83,6 +83,12 @@ public class DistributedMachine {
             if (funcName == null) {
                 wrongCommand();
             } else {
+                if(funcName.equals("quit")) {
+                    server.close();
+                    syncThread.stop();
+                    pingThread.stop();
+                    return;
+                }
                 Method method = DistributedMachine.class.getDeclaredMethod(funcName);
                 method.setAccessible(true);
                 method.invoke(null);    //static method
@@ -256,7 +262,6 @@ public class DistributedMachine {
 
             for (MachineInfo mi : getMemberList().getAll()) {
                 DatagramSocket socket = new DatagramSocket();
-                System.err.println("!!!");
                 String[] add = mi.getAddress().split(":");
                 InetAddress address = InetAddress.getByName(add[0]);
                 Message leaveMessage = Message.generateLeaveMessage(uuid, timestamp.incrementAndGet());
@@ -266,8 +271,6 @@ public class DistributedMachine {
                 bos.close();
                 byte[] sendData;
                 sendData = bos.toByteArray();
-
-                System.out.println("leave address: " + address.toString() + ":" + add[1]);
                 DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, Integer.parseInt(add[1]));
                 socket.send(sendPacket);
             }
@@ -405,7 +408,7 @@ public class DistributedMachine {
     public static void leaveMachine(MachineInfo mi) {
         if(memberList.contains(mi)) {
             memberList.updateMachineInfo(mi);
-            mi.stopFailureDetecting();
+            memberList.get(mi).stopFailureDetecting();
         }
     }
 

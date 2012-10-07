@@ -27,6 +27,9 @@ public class CommandMap {
     private static final String CMD_HELP = "help";
     private static final String FUNC_HELP = "printHelp";
 
+    private static final String CMD_QUIT = "quit";
+    private static final String FUNC_QUIT ="quit";
+
     private CommandMap() {
 
     }
@@ -44,6 +47,7 @@ public class CommandMap {
         stringToFuncName.put(CMD_LEAVE_GROUP, FUNC_LEAVE_GROUP);
         stringToFuncName.put(CMD_SHOW_MEMBER_LIST, FUNC_SHOW_MEMBER_LIST);
         stringToFuncName.put(CMD_HELP, FUNC_HELP);
+        stringToFuncName.put(CMD_QUIT, FUNC_QUIT);
 
         return this;
     }

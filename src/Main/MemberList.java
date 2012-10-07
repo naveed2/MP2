@@ -36,6 +36,17 @@ public class MemberList {
         }
     }
 
+    public MachineInfo get(MachineInfo mi) {
+        synchronized (this) {
+            for(MachineInfo tmp : getAll()) {
+                if (tmp.getUUID().equals(mi.getUUID())) {
+                    return tmp;
+                }
+            }
+        }
+        return null;
+    }
+
     public List<MachineInfo> getAll() {
         synchronized (this) {
             return new LinkedList<MachineInfo>(list);
