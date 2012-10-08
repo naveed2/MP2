@@ -341,6 +341,7 @@ public class DistributedMachine {
         DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, port);
         socket.send(sendPacket);
         socket.close();
+        logger.info(new String(sendData));
         logger.info("Sends updpacket, size: " + sendData.length + " bytes");
     }
 
